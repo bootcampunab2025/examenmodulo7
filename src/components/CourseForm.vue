@@ -2,31 +2,23 @@
   <BForm>
     <BRow>
       <BCol md="6">
-        <BFormGroup 
-          id="codigo-group" 
-          label="Código del Curso:" 
-          label-for="codigo"
-        >
+        <BFormGroup label="Código del Curso:" label-for="codigo">
           <BFormInput
             id="codigo"
             :model-value="course.codigo"
-            @input="updateField('codigo', $event)"
+            @update:modelValue="val => updateField('codigo', val)"
             placeholder="ej: 0001"
             required
           />
         </BFormGroup>
       </BCol>
-      
+
       <BCol md="6">
-        <BFormGroup 
-          id="nombre-group" 
-          label="Nombre del Curso:" 
-          label-for="nombre"
-        >
+        <BFormGroup label="Nombre del Curso:" label-for="nombre">
           <BFormInput
             id="nombre"
             :model-value="course.nombre"
-            @input="updateField('nombre', $event)"
+            @update:modelValue="val => updateField('nombre', val)"
             placeholder="ej: HTML"
             required
           />
@@ -34,15 +26,11 @@
       </BCol>
     </BRow>
 
-    <BFormGroup 
-      id="descripcion-group" 
-      label="Descripción:" 
-      label-for="descripcion"
-    >
+    <BFormGroup label="Descripción:" label-for="descripcion">
       <BFormTextarea
         id="descripcion"
         :model-value="course.descripcion"
-        @input="updateField('descripcion', $event)"
+        @update:modelValue="val => updateField('descripcion', val)"
         placeholder="Describe el curso..."
         rows="3"
         required
@@ -51,52 +39,42 @@
 
     <BRow>
       <BCol md="4">
-        <BFormGroup 
-          id="precio-group" 
-          label="Precio:" 
-          label-for="precio"
-        >
-          <BInputGroup prepend="$">
+        <BFormGroup label="Precio:" label-for="precio">
+          <BInputGroup>
+            <BInputGroupText>$</BInputGroupText>
             <BFormInput
               id="precio"
-              :model-value="course.precio"
-              @input="updateField('precio', $event)"
               type="number"
+              :model-value="course.precio"
+              @update:modelValue="val => updateNumber('precio', val)"
               placeholder="30000"
               min="0"
+              step="1000"
               required
             />
           </BInputGroup>
         </BFormGroup>
       </BCol>
-      
+
       <BCol md="4">
-        <BFormGroup 
-          id="duracion-group" 
-          label="Duración:" 
-          label-for="duracion"
-        >
+        <BFormGroup label="Duración:" label-for="duracion">
           <BFormInput
             id="duracion"
             :model-value="course.duracion"
-            @input="updateField('duracion', $event)"
+            @update:modelValue="val => updateField('duracion', val)"
             placeholder="ej: 1 mes"
             required
           />
         </BFormGroup>
       </BCol>
-      
+
       <BCol md="4">
-        <BFormGroup 
-          id="cupos-group" 
-          label="Cupos:" 
-          label-for="cupos"
-        >
+        <BFormGroup label="Cupos:" label-for="cupos">
           <BFormInput
             id="cupos"
-            :model-value="course.cupos"
-            @input="updateField('cupos', $event)"
             type="number"
+            :model-value="course.cupos"
+            @update:modelValue="val => updateNumber('cupos', val)"
             placeholder="10"
             min="1"
             required
@@ -107,32 +85,24 @@
 
     <BRow>
       <BCol md="6">
-        <BFormGroup 
-          id="inscritos-group" 
-          label="Inscritos:" 
-          label-for="inscritos"
-        >
+        <BFormGroup label="Inscritos:" label-for="inscritos">
           <BFormInput
             id="inscritos"
-            :model-value="course.inscritos"
-            @input="updateField('inscritos', $event)"
             type="number"
+            :model-value="course.inscritos"
+            @update:modelValue="val => updateNumber('inscritos', val)"
             placeholder="0"
             min="0"
           />
         </BFormGroup>
       </BCol>
-      
+
       <BCol md="6">
-        <BFormGroup 
-          id="estado-group" 
-          label="Estado:" 
-          label-for="estado"
-        >
+        <BFormGroup label="Estado:" label-for="estado">
           <BFormCheckbox
             id="estado"
-            :checked="course.estado"
-            @input="updateField('estado', $event)"
+            :model-value="course.estado"
+            @update:modelValue="val => updateBoolean('estado', val)"
           >
             Curso activo
           </BFormCheckbox>
@@ -140,16 +110,12 @@
       </BCol>
     </BRow>
 
-    <BFormGroup 
-      id="img-group" 
-      label="URL de la Imagen:" 
-      label-for="img"
-    >
+    <BFormGroup label="URL de la Imagen:" label-for="img">
       <BFormInput
         id="img"
-        :model-value="course.img"
-        @input="updateField('img', $event)"
         type="url"
+        :model-value="course.img"
+        @update:modelValue="val => updateField('img', val)"
         placeholder="https://ejemplo.com/imagen.png"
         required
       />
@@ -158,8 +124,8 @@
     <!-- Vista previa de la imagen -->
     <div v-if="course.img" class="text-center mt-3">
       <p class="mb-2"><strong>Vista previa:</strong></p>
-      <img 
-        :src="course.img" 
+      <img
+        :src="course.img"
         :alt="course.nombre"
         style="max-width: 200px; max-height: 150px; object-fit: contain;"
         class="img-thumbnail"
@@ -170,13 +136,13 @@
 </template>
 
 <script>
-import { 
-  BForm, 
-  BRow, 
-  BCol, 
-  BFormGroup, 
-  BFormInput, 
-  BFormTextarea, 
+import {
+  BForm,
+  BRow,
+  BCol,
+  BFormGroup,
+  BFormInput,
+  BFormTextarea,
   BFormCheckbox,
   BInputGroup,
   BInputGroupText
@@ -203,12 +169,22 @@ export default {
   },
   emits: ['update-course'],
   methods: {
-    updateField(field, value) {
+    updateField (field, value) {
       const updatedCourse = { ...this.course, [field]: value }
       this.$emit('update-course', updatedCourse)
     },
-    
-    handleImageError(event) {
+    updateNumber (field, value) {
+      const num = value === '' || value === null || value === undefined
+        ? null
+        : Number(value)
+      const updatedCourse = { ...this.course, [field]: num }
+      this.$emit('update-course', updatedCourse)
+    },
+    updateBoolean (field, value) {
+      const updatedCourse = { ...this.course, [field]: Boolean(value) }
+      this.$emit('update-course', updatedCourse)
+    },
+    handleImageError (event) {
       event.target.style.display = 'none'
     }
   }
