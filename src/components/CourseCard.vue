@@ -86,6 +86,7 @@ export default {
 .course-card {
   transition: transform 0.2s;
   border: 1px solid #dee2e6;
+  background-color: #95c5f8;
 }
 
 .course-card:hover {
