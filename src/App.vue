@@ -8,6 +8,17 @@ import { useAuthStore } from '@/stores/auth'
 const auth = useAuthStore()
 const { showWelcome, toastBody, onToastHidden } = useWelcomeToast()
 const modalTitle = 'Sesión iniciada'
+
+
+import { onMounted } from 'vue'
+onMounted(() => {
+  if (!auth.isAuthReady) {
+    auth.initAuthStateListener()
+  }
+})
+
+
+
 </script>
 
 <template>

@@ -23,7 +23,7 @@ const initialCourses = [
     "descripcion": "curso css",
     "cupos": 20,
     "inscritos": 0,
-    "img": "https://lineadecodigo.com/wp-content/uploads/2014/04/css.png"
+    "img": "https://cdn.pixabay.com/photo/2016/11/19/23/00/css3-1841590_1280.png"
   },
   {
     "codigo": "0003",
