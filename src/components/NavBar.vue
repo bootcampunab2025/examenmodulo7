@@ -22,7 +22,9 @@
           @click="$router.push('/admin')"
         >
           Administrar
-        </button>
+        </button> 
+
+
       </div>
 
       <!-- User Section -->
@@ -59,6 +61,8 @@ export default {
     const isAuthenticated = computed(() => authStore.isAuthenticated)
     const currentUser = computed(() => authStore.currentUser)
     const isLoading = computed(() => authStore.isLoading)
+    
+
 
     const handleLogout = async () => {
       const result = await authStore.logoutUser()
