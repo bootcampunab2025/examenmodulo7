@@ -107,7 +107,7 @@
     </BCard>
 
 <!-- Modal Agregar Curso (formulario) -->
-<BModal v-model="showAddModal" title="Agregar Nuevo Curso" size="lg" @hidden="resetForm">
+<BModal v-model="showAddModal" title="Agregar Nuevo Curso" size="lg">
   <CourseForm :course="newCourse" @update-course="updateNewCourse" />
 
   <template #footer>
