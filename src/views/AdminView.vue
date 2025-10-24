@@ -174,14 +174,27 @@
       title="Confirmar Eliminación"
       centered
       data-cy="confirm-delete-modal"
-      @ok="handleDeleteConfirm"
-      @cancel="showConfirmDelete = false"
-      ok-title="Sí, Borrar"
-      ok-variant="danger"
-      cancel-title="Cancelar"
-      cancel-variant="secondary"
     >
       <p>¿Realmente deseas eliminar el curso <strong>{{ courseToDelete?.nombre }}</strong>?</p>
+
+      <template #footer>
+        <BButton
+          variant="secondary"
+          @click="showConfirmDelete = false"
+          data-cy="cancel-delete-btn"
+        >
+          Cancelar
+        </BButton>
+        <BButton
+          variant="danger"
+          :disabled="coursesStore.isLoading"
+          @click="onConfirmDeleteClick"
+          data-cy="confirm-delete-btn"
+        >
+          <span v-if="coursesStore.isLoading" class="spinner-border spinner-border-sm me-2"></span>
+          Sí, Borrar
+        </BButton>
+      </template>
     </BModal>
   </div>
 </template>
@@ -378,6 +391,7 @@ const addCourse = async () => {
 const editCourse = (course) => { router.push(`/admin/edit/${course.id}`) }
 const confirmDelete = (course) => { courseToDelete.value = course; showConfirmDelete.value = true }
 const handleDeleteConfirm = (event) => { event.preventDefault(); deleteCourse() }
+const onConfirmDeleteClick = () => { deleteCourse() }
 
 const deleteCourse = async () => {
   showConfirmDelete.value = false

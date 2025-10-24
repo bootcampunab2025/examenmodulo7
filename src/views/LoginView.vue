@@ -12,7 +12,8 @@
       <!-- Error Alert -->
       <div 
         v-if="authStore.getError" 
-        class="error-alert"
+        class="error-alert alert alert-danger"
+        role="alert"
       >
         <div class="error-content">
           <span class="error-icon">!</span>
@@ -73,7 +74,7 @@
           @click="$router.push('/register')"
           :disabled="authStore.isLoading"
         >
-          Crear cuenta gratuita
+          Regístrate aquí
         </button>
       </div>
     </div>
