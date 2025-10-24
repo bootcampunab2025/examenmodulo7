@@ -23,6 +23,7 @@
               @click="openAddForm"
               :disabled="coursesStore.isLoading"
               data-cy="open-add-form-btn"
+              @hidden="resetForm"
             >
               Agregar Curso
             </BButton>
