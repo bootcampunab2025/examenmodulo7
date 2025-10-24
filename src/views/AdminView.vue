@@ -106,28 +106,34 @@
       </BTable>
     </BCard>
 
-    <!-- Modal Agregar Curso (formulario) -->
-    <BModal v-model="showAddModal" title="Agregar Nuevo Curso" size="lg" @hidden="resetForm">
-      <CourseForm :course="newCourse" @update-course="updateNewCourse" />
+<!-- Modal Agregar Curso (formulario) -->
+<BModal v-model="showAddModal" title="Agregar Nuevo Curso" size="lg" @hidden="resetForm">
+  <CourseForm :course="newCourse" @update-course="updateNewCourse" />
 
-      <template #modal-footer>
-        <BButton variant="secondary" @click="showAddModal = false" data-cy="cancel-add-btn">Cancelar</BButton>
-        <BButton
-          variant="primary"
-          @click="confirmAddCourse"
-          :disabled="coursesStore.isLoading"
-          data-cy="confirm-add-btn"
-        >
-          Agregar Curso
-        </BButton>
-      </template>
-    </BModal>
+  <template #footer>
+    <BButton
+      variant="secondary"
+      @click="() => { console.log('[UI] Cancel Add clicked'); showAddModal = false }"
+      data-cy="cancel-add-btn"
+    >
+      Cancelar
+    </BButton>
+    <BButton
+      variant="primary"
+      :disabled="coursesStore.isLoading"
+      @click="() => { console.log('[UI] Confirm Add Form clicked'); confirmAddCourse() }"
+      data-cy="confirm-add-btn"
+    >
+      Agregar Curso
+    </BButton>
+  </template>
+</BModal>
 
     <!-- Modal Confirmar Agregar (acción final) -->
     <BModal v-model="showConfirmAdd" title="Confirmar" centered>
       <p>¿Deseas agregar este curso?</p>
 
-      <template #modal-footer>
+      <template #footer>
         <BButton variant="secondary" @click="showConfirmAdd = false" data-cy="cancel-confirm-add-btn">Cancelar</BButton>
         <BButton
           variant="primary"
