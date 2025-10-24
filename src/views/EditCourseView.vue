@@ -73,7 +73,7 @@
       centered
     >
       <p>¿Deseas actualizar este curso?</p>
-      <template #modal-footer>
+      <template #footer>
         <BButton variant="secondary" @click="showConfirmUpdate = false">
           Cancelar
         </BButton>
