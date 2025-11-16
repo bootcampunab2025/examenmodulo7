@@ -8,7 +8,7 @@ Sistema de administración de cursos desarrollado con Vue 3, Firebase y Bootstra
 - ✅ **CRUD de Cursos**: Crear, leer, actualizar y eliminar cursos
 - ✅ **Base de datos en tiempo real**: Firestore para almacenamiento
 - ✅ **UI moderna**: Bootstrap Vue para estilos
-- ✅ **Gestión de estado**: Pinia (reemplazo moderno de Vuex)
+- ✅ **Gestión de estado**: Vuex 4 (módulos `auth` y `courses`)
 - ✅ **Pruebas E2E**: Cypress para testing
 - ✅ **Responsive**: Adaptable a dispositivos móviles
 
@@ -60,16 +60,54 @@ npm run cypress:run
 1. **Login**: Verificación de autenticación con email y contraseña
 2. **Eliminar Cursos**: Funcionalidad de eliminación de cursos
 
+## 📊 Reportes E2E (Mochawesome)
+
+Este proyecto genera reportes de Cypress con Mochawesome.
+
+Atajo para ejecutar pruebas y crear un HTML consolidado en carpeta separada:
+
+```bash
+npm run test:e2e:html
+```
+
+- JSON individuales: `cypress/reports`
+- Reporte único HTML: `cypress/report-html/index.html`
+
+Si prefieres los pasos por separado:
+
+```bash
+# 1) Ejecuta las pruebas en modo headless
+npm run test:e2e
+
+# 2) Prepara carpetas para reportes consolidados
+npm run report:prep
+
+# 3) Une todos los JSON en uno solo
+npm run report:merge
+
+# 4) Genera el HTML consolidado en carpeta separada
+npm run report:html
+```
+
 ## 🎨 Tecnologías Utilizadas
 
 - **Vue 3**: Framework JavaScript reactivo
 - **Vite**: Build tool moderno y rápido
-- **Pinia**: Gestión de estado
+- **Vuex 4**: Gestión de estado
 - **Vue Router**: Enrutamiento SPA
 - **Firebase Auth**: Autenticación de usuarios
 - **Firestore**: Base de datos NoSQL en tiempo real
 - **Bootstrap Vue Next**: Componentes UI
 - **Cypress**: Testing E2E
+
+## 🔄 Gestión de Estado con Vuex
+
+El proyecto ahora utiliza **Vuex 4** para cumplir con el requerimiento explícito de la rúbrica. Existen dos módulos principales:
+
+- `auth`: Maneja autenticación, listeners de Firebase y el flujo de bienvenida.
+- `courses`: Expone el CRUD de cursos con listeners en tiempo real a Firestore.
+
+Los componentes mantienen la API previa (`useAuthStore`, `useCoursesStore`) mediante envoltorios que delegan en Vuex, por lo que no es necesario cambiar la capa de presentación.
 
 ## 📚 Datos Iniciales
 

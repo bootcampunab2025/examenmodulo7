@@ -1,0 +1,110 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-11-16T23:39:32.444Z",
+    "end": "2025-11-16T23:39:41.373Z",
+    "duration": 8929,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "5885bf9f-893c-41d7-9ba2-2884f09206c2",
+      "title": "",
+      "fullFile": "cypress\\e2e\\Protected_Routes_After_Logout.cy.js",
+      "file": "cypress\\e2e\\Protected_Routes_After_Logout.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "b155a26a-f1ac-451e-b94c-c5bd31ccdc1f",
+          "title": "Protected routes",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should not allow access to /admin after logout",
+              "fullTitle": "Protected routes Should not allow access to /admin after logout",
+              "timedOut": null,
+              "duration": 8803,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Log in first\ncy.visit('/login');\ncy.get('#email').type('iamfelipediaz@gmail.com');\ncy.get('#password').type('vue1234');\ncy.get('button[type=\"submit\"]').click();\n// Confirm successful login\ncy.url().should('include', '/');\n// Click the logout button\ncy.get('[data-cy=logout-btn]').click();\n// Ensure redirected to login\ncy.url().should('include', '/login');\n// Try to visit a protected route manually\ncy.visit('/admin');\n// The app should automatically redirect back to login\ncy.url().should('include', '/login');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=logout-btn]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=logout-btn]`, but never found it.\n    at Context.eval (webpack://vue-firebase/./cypress/e2e/Protected_Routes_After_Logout.cy.js:13:7)",
+                "diff": null
+              },
+              "uuid": "cf5f49e8-0273-409b-a91e-5669c2b34d5c",
+              "parentUUID": "b155a26a-f1ac-451e-b94c-c5bd31ccdc1f",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "cf5f49e8-0273-409b-a91e-5669c2b34d5c"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 8803,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.0"
+    }
+  }
+}
