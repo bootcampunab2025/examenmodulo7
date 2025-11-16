@@ -1,0 +1,110 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-11-16T23:39:45.531Z",
+    "end": "2025-11-16T23:39:52.883Z",
+    "duration": 7352,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "143f3e59-5df2-4a75-b762-46a7624423e9",
+      "title": "",
+      "fullFile": "cypress\\e2e\\Redirect_to_Login_after_Logout.cy.js",
+      "file": "cypress\\e2e\\Redirect_to_Login_after_Logout.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "81b125b4-c268-449f-a906-f580a01de27a",
+          "title": "Logout functionality",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should redirect to login page after logout",
+              "fullTitle": "Logout functionality Should redirect to login page after logout",
+              "timedOut": null,
+              "duration": 7212,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Click the logout button\ncy.get('[data-cy=logout-btn]').click();\n// Verify the user is redirected to login\ncy.url().should('include', '/login');\n// Verify login form is visible again\ncy.get('#email').should('be.visible');\ncy.get('#password').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=logout-btn]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=logout-btn]`, but never found it.\n    at Context.eval (webpack://vue-firebase/./cypress/e2e/Redirect_to_Login_after_Logout.cy.js:15:7)",
+                "diff": null
+              },
+              "uuid": "26bb27a3-0e05-4d58-ab0f-7006e9d9f60f",
+              "parentUUID": "81b125b4-c268-449f-a906-f580a01de27a",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "26bb27a3-0e05-4d58-ab0f-7006e9d9f60f"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 7212,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.0"
+    }
+  }
+}

@@ -8,7 +8,7 @@ Sistema de administración de cursos desarrollado con Vue 3, Firebase y Bootstra
 - ✅ **CRUD de Cursos**: Crear, leer, actualizar y eliminar cursos
 - ✅ **Base de datos en tiempo real**: Firestore para almacenamiento
 - ✅ **UI moderna**: Bootstrap Vue para estilos
-- ✅ **Gestión de estado**: Pinia (reemplazo moderno de Vuex)
+- ✅ **Gestión de estado**: Vuex 4 (módulos `auth` y `courses`)
 - ✅ **Pruebas E2E**: Cypress para testing
 - ✅ **Responsive**: Adaptable a dispositivos móviles
 
@@ -93,31 +93,21 @@ npm run report:html
 
 - **Vue 3**: Framework JavaScript reactivo
 - **Vite**: Build tool moderno y rápido
-- **Pinia**: Gestión de estado
+- **Vuex 4**: Gestión de estado
 - **Vue Router**: Enrutamiento SPA
 - **Firebase Auth**: Autenticación de usuarios
 - **Firestore**: Base de datos NoSQL en tiempo real
 - **Bootstrap Vue Next**: Componentes UI
 - **Cypress**: Testing E2E
 
-## 🤔 ¿Por qué usamos Pinia (en vez de Vuex)?
+## 🔄 Gestión de Estado con Vuex
 
-El enunciado menciona “Vuex”, pero este proyecto utiliza Pinia por las siguientes razones:
+El proyecto ahora utiliza **Vuex 4** para cumplir con el requerimiento explícito de la rúbrica. Existen dos módulos principales:
 
-- Pinia es la librería de estado oficial recomendada para Vue 3 por el equipo core de Vue.
-- API más simple y con menos boilerplate, mejor DX, y soporte de tipado más claro.
-- Mantiene el mismo modelo mental que pide la pauta: estados, getters y acciones.
-- Totalmente compatible con el patrón de “store centralizada” que se evalúa.
+- `auth`: Maneja autenticación, listeners de Firebase y el flujo de bienvenida.
+- `courses`: Expone el CRUD de cursos con listeners en tiempo real a Firestore.
 
-Equivalencia de conceptos (Vuex → Pinia):
-- State → state() en la store de Pinia
-- Getters → getters en la store de Pinia
-- Actions → actions en la store de Pinia (incluyen lógica async)
-
-Cumplimiento con la rúbrica:
-- “Usar Vuex para almacenar/modificar estados” → Se cumple con Pinia implementando state/getters/actions y compartiendo estados globales (usuario, cursos) entre vistas y componentes.
-
-Si la evaluación exigiera “Vuex” de forma literal, es factible migrar en corto plazo replicando los módulos `auth` y `courses` en Vuex 4 (compatible con Vue 3) sin cambiar la UI.
+Los componentes mantienen la API previa (`useAuthStore`, `useCoursesStore`) mediante envoltorios que delegan en Vuex, por lo que no es necesario cambiar la capa de presentación.
 
 ## 📚 Datos Iniciales
 

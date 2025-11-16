@@ -1,0 +1,233 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 7,
+    "passes": 4,
+    "pending": 0,
+    "failures": 3,
+    "start": "2025-11-16T23:40:07.684Z",
+    "end": "2025-11-16T23:40:36.936Z",
+    "duration": 29252,
+    "testsRegistered": 7,
+    "passPercent": 57.14285714285714,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "74a31a4c-4529-476d-89e1-dc3d366c010a",
+      "title": "",
+      "fullFile": "cypress\\e2e\\login.cy.js",
+      "file": "cypress\\e2e\\login.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "8d593ad8-edca-4f87-a236-3340df21ad42",
+          "title": "Login Functionality",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display login form",
+              "fullTitle": "Login Functionality should display login form",
+              "timedOut": null,
+              "duration": 2385,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Verificar que los elementos del formulario estén presentes\ncy.get('#email').should('be.visible');\ncy.get('#password').should('be.visible');\ncy.get('button[type=\"submit\"]').should('be.visible');\ncy.contains('Iniciar Sesión').should('be.visible');",
+              "err": {},
+              "uuid": "be969afc-22aa-4c67-9d8b-d2147d9768a9",
+              "parentUUID": "8d593ad8-edca-4f87-a236-3340df21ad42",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show error for invalid credentials",
+              "fullTitle": "Login Functionality should show error for invalid credentials",
+              "timedOut": null,
+              "duration": 2228,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Intentar login con credenciales inválidas\ncy.get('#email').type('invalid@email.com');\ncy.get('#password').type('wrongpassword');\ncy.get('button[type=\"submit\"]').click();\n// Verificar que se muestre un mensaje de error\ncy.get('.alert-danger').should('be.visible');",
+              "err": {},
+              "uuid": "b6548406-d557-4d14-a00c-a92cd8d443db",
+              "parentUUID": "8d593ad8-edca-4f87-a236-3340df21ad42",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show validation errors for empty fields",
+              "fullTitle": "Login Functionality should show validation errors for empty fields",
+              "timedOut": null,
+              "duration": 702,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Intentar enviar formulario vacío\ncy.get('button[type=\"submit\"]').click();\n// Los campos requeridos deberían mostrar validación del navegador\ncy.get('#email:invalid').should('exist');\ncy.get('#password:invalid').should('exist');",
+              "err": {},
+              "uuid": "8772e91b-d82f-4e6a-adb5-9ff5b4694965",
+              "parentUUID": "8d593ad8-edca-4f87-a236-3340df21ad42",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should redirect to register page",
+              "fullTitle": "Login Functionality should redirect to register page",
+              "timedOut": null,
+              "duration": 1003,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Hacer clic en el enlace de registro\ncy.contains('Regístrate aquí').click();\n// Verificar que se redirija a la página de registro\ncy.url().should('include', '/register');",
+              "err": {},
+              "uuid": "05ce38cb-4fdc-4780-ad57-aa2b7cd8da28",
+              "parentUUID": "8d593ad8-edca-4f87-a236-3340df21ad42",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should login successfully with valid credentials",
+              "fullTitle": "Login Functionality should login successfully with valid credentials",
+              "timedOut": null,
+              "duration": 5962,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Nota: Esta prueba requiere que tengas un usuario de prueba en Firebase\n// o que uses Firebase Emulator Suite para las pruebas\n// Interceptar la llamada a Firebase Auth\ncy.intercept('POST', '**/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword*', {\n  statusCode: 200,\n  body: {\n    idToken: 'mock-id-token',\n    email: testEmail,\n    refreshToken: 'mock-refresh-token',\n    expiresIn: '3600',\n    localId: 'mock-user-id'\n  }\n}).as('loginRequest');\n// Realizar login\ncy.get('#email').type(testEmail);\ncy.get('#password').type(testPassword);\ncy.get('button[type=\"submit\"]').click();\n// Esperar la llamada a la API\ncy.wait('@loginRequest');\n// Verificar que se redirija al home\ncy.url().should('eq', Cypress.config().baseUrl + '/');\n// Verificar que el navbar muestre el email del usuario\ncy.get('[data-cy=\"user-email\"]').should('contain', testEmail);\n// Verificar que el usuario esté logueado (presencia del botón logout)\ncy.get('[data-cy=\"logout-btn\"]').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: expected 'http://localhost:5173/login' to equal 'http://localhost:5173/'",
+                "estack": "AssertionError: Timed out retrying after 4000ms: expected 'http://localhost:5173/login' to equal 'http://localhost:5173/'\n    at Context.eval (webpack://vue-firebase/./cypress/e2e/login.cy.js:71:13)",
+                "diff": "- 'http://localhost:5173/login'\n+ 'http://localhost:5173/'\n"
+              },
+              "uuid": "52871109-bbc7-4a65-902a-20de5225e75a",
+              "parentUUID": "8d593ad8-edca-4f87-a236-3340df21ad42",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should maintain session after page reload",
+              "fullTitle": "Login Functionality should maintain session after page reload",
+              "timedOut": null,
+              "duration": 11000,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Simular usuario logueado\ncy.window().then(win => {\n  // Simular que hay un usuario en el localStorage o sessionStorage\n  win.localStorage.setItem('firebase:authUser:mock-api-key:[DEFAULT]', JSON.stringify({\n    uid: 'mock-user-id',\n    email: testEmail,\n    emailVerified: true\n  }));\n});\n// Recargar la página\ncy.reload();\n// Verificar que el usuario siga logueado\ncy.get('[data-cy=\"user-email\"]', {\n  timeout: 10000\n}).should('contain', testEmail);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find element: `[data-cy=\"user-email\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find element: `[data-cy=\"user-email\"]`, but never found it.\n    at Context.eval (webpack://vue-firebase/./cypress/e2e/login.cy.js:95:57)",
+                "diff": null
+              },
+              "uuid": "efbb40a0-e289-4c68-baa2-7d6aaf951ded",
+              "parentUUID": "8d593ad8-edca-4f87-a236-3340df21ad42",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should logout successfully",
+              "fullTitle": "Login Functionality should logout successfully",
+              "timedOut": null,
+              "duration": 5375,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Simular usuario logueado\ncy.window().then(win => {\n  win.localStorage.setItem('firebase:authUser:mock-api-key:[DEFAULT]', JSON.stringify({\n    uid: 'mock-user-id',\n    email: testEmail,\n    emailVerified: true\n  }));\n});\ncy.visit('/');\n// Interceptar la llamada de logout\ncy.intercept('POST', '**/identitytoolkit.googleapis.com/v1/accounts:signOut*', {\n  statusCode: 200,\n  body: {}\n}).as('logoutRequest');\n// Hacer logout\ncy.get('[data-cy=\"logout-btn\"]').click();\n// Verificar redirección al login\ncy.url().should('include', '/login');\n// Verificar que no hay datos de usuario en localStorage\ncy.window().then(win => {\n  const userData = win.localStorage.getItem('firebase:authUser:mock-api-key:[DEFAULT]');\n  expect(userData).to.be.null;\n});",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"logout-btn\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"logout-btn\"]`, but never found it.\n    at Context.eval (webpack://vue-firebase/./cypress/e2e/login.cy.js:117:7)",
+                "diff": null
+              },
+              "uuid": "f66485da-a083-4f4c-ab26-71895787ef27",
+              "parentUUID": "8d593ad8-edca-4f87-a236-3340df21ad42",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "be969afc-22aa-4c67-9d8b-d2147d9768a9",
+            "b6548406-d557-4d14-a00c-a92cd8d443db",
+            "8772e91b-d82f-4e6a-adb5-9ff5b4694965",
+            "05ce38cb-4fdc-4780-ad57-aa2b7cd8da28"
+          ],
+          "failures": [
+            "52871109-bbc7-4a65-902a-20de5225e75a",
+            "efbb40a0-e289-4c68-baa2-7d6aaf951ded",
+            "f66485da-a083-4f4c-ab26-71895787ef27"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 28655,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.0"
+    }
+  }
+}

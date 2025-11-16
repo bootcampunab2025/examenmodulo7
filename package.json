@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "test:e2e": "cypress run",
+    "test:e2e": "start-server-and-test dev http://localhost:5173 cypress:run",
     "report:prep": "node -e \"require('fs').mkdirSync('cypress/report-merged',{recursive:true}); require('fs').mkdirSync('cypress/report-html',{recursive:true});\"",
     "report:merge": "npx mochawesome-merge --reportDir cypress/reports --out cypress/report-merged/mochawesome.json",
     "report:html": "npx marge cypress/report-merged/mochawesome.json --reportDir cypress/report-html --inline=false --overwrite",
@@ -23,9 +23,9 @@
     "bootstrap-icons": "^1.13.1",
     "bootstrap-vue-next": "^0.40.6",
     "firebase": "^12.4.0",
-    "pinia": "^3.0.3",
     "vue": "^3.5.22",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
@@ -33,6 +33,7 @@
     "mochawesome": "^7.1.4",
     "mochawesome-merge": "^5.0.0",
     "mochawesome-report-generator": "^6.3.0",
+    "start-server-and-test": "^2.1.2",
     "vite": "^7.1.7",
     "vite-plugin-vue-devtools": "^8.0.2"
   }

@@ -313,32 +313,13 @@ const resetForm = () => {
   newCourse.value = { codigo: '', nombre: '', descripcion: '', precio: '', duracion: '', cupos: '', inscritos: 0, estado: true, img: '' }
 }
 
-// toggle handler con optimistic update y rollback (no console.log suelto)
+// Cambio de estado usando el módulo Vuex; Firestore y el listener actualizarán la UI
 const toggleCourseState = async (item, newState) => {
-  console.log('[UI] toggleCourseState called', item?.id, 'newState=', newState)
-  if (!item || !item.id) return
-  if (coursesStore.isLoading) return
+  if (!item || !item.id || coursesStore.isLoading) return
 
-  const id = item.id
-  const desired = Boolean(newState)
-  const idx = coursesStore.courses.findIndex(c => c.id === id)
-  const prev = idx !== -1 ? { ...coursesStore.courses[idx] } : null
-
-  if (idx !== -1) coursesStore.courses[idx] = { ...coursesStore.courses[idx], estado: desired }
-
-  try {
-    const result = await coursesStore.updateCourse(id, { estado: desired })
-    console.log('[UI] toggleCourseState store result', result)
-    if (!(result && result.success)) {
-      if (idx !== -1 && prev) coursesStore.courses[idx] = prev
-      alert('No fue posible actualizar el estado del curso')
-    } else {
-      console.log('[UI] toggleCourseState done', id)
-    }
-  } catch (err) {
-    if (idx !== -1 && prev) coursesStore.courses[idx] = prev
-    console.error('[UI] toggleCourseState exception', err)
-    alert('Error crítico al actualizar el estado')
+  const result = await coursesStore.updateCourse(item.id, { estado: Boolean(newState) })
+  if (!(result && result.success)) {
+    alert('No fue posible actualizar el estado del curso')
   }
 }
 

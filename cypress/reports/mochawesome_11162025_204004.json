@@ -1,0 +1,225 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-11-16T23:39:56.727Z",
+    "end": "2025-11-16T23:40:04.133Z",
+    "duration": 7406,
+    "testsRegistered": 7,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 6,
+    "hasSkipped": true
+  },
+  "results": [
+    {
+      "uuid": "43f673dc-d095-4f0d-8508-1690ad1a9ca0",
+      "title": "",
+      "fullFile": "cypress\\e2e\\delete-course.cy.js",
+      "file": "cypress\\e2e\\delete-course.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "7e4b8bcc-72ab-47e6-955a-c6ba25681e96",
+          "title": "Delete Course Functionality",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display courses in admin table",
+              "fullTitle": "Delete Course Functionality should display courses in admin table",
+              "timedOut": null,
+              "duration": 7176,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Verificar que la tabla de cursos se muestre\ncy.get('table').should('be.visible');\ncy.contains(mockCourse.nombre).should('be.visible');\ncy.contains(mockCourse.codigo).should('be.visible');",
+              "err": {
+                "message": "CypressError: Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `getCourses`. No request ever occurred.\n\nhttps://on.cypress.io/wait\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Delete Course Functionality`",
+                "estack": "CypressError: Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `getCourses`. No request ever occurred.\n\nhttps://on.cypress.io/wait\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Delete Course Functionality`\n    at cypressErr (http://localhost:5173/__cypress/runner/cypress_runner.js:77776:18)\n    at Object.errByPath (http://localhost:5173/__cypress/runner/cypress_runner.js:77844:10)\n    at checkForXhr (http://localhost:5173/__cypress/runner/cypress_runner.js:138095:84)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:138120:28)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise.attempt.Promise.try (http://localhost:5173/__cypress/runner/cypress_runner.js:4285:29)\n    at whenStable (http://localhost:5173/__cypress/runner/cypress_runner.js:151159:68)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:151100:14)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise._settlePromiseFromHandler (http://localhost:5173/__cypress/runner/cypress_runner.js:1489:31)\n    at Promise._settlePromise (http://localhost:5173/__cypress/runner/cypress_runner.js:1546:18)\n    at Promise._settlePromise0 (http://localhost:5173/__cypress/runner/cypress_runner.js:1591:10)\n    at Promise._settlePromises (http://localhost:5173/__cypress/runner/cypress_runner.js:1671:18)\n    at Promise._fulfill (http://localhost:5173/__cypress/runner/cypress_runner.js:1615:18)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:5420:46)\nFrom Your Spec Code:\n    at Context.eval (webpack://vue-firebase/./cypress/e2e/delete-course.cy.js:51:7)",
+                "diff": null
+              },
+              "uuid": "47bb2788-c1f3-4932-9914-aa5bd4d9126d",
+              "parentUUID": "7e4b8bcc-72ab-47e6-955a-c6ba25681e96",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show delete confirmation modal",
+              "fullTitle": "Delete Course Functionality should show delete confirmation modal",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Hacer clic en el botón de eliminar\ncy.get('[data-cy=\"delete-course-btn\"]').first().click();\n// Verificar que se muestre el modal de confirmación\ncy.get('[data-cy=\"confirm-delete-modal\"]').should('be.visible');\ncy.contains('¿Realmente deseas eliminar').should('be.visible');\ncy.contains(mockCourse.nombre).should('be.visible');\n// Verificar que los botones estén presentes\ncy.get('[data-cy=\"cancel-delete-btn\"]').should('be.visible');\ncy.get('[data-cy=\"confirm-delete-btn\"]').should('be.visible');",
+              "err": {},
+              "uuid": "3ebdcb47-72c2-4a09-965b-2bd38942b5cb",
+              "parentUUID": "7e4b8bcc-72ab-47e6-955a-c6ba25681e96",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "should cancel delete operation",
+              "fullTitle": "Delete Course Functionality should cancel delete operation",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Abrir modal de confirmación\ncy.get('[data-cy=\"delete-course-btn\"]').first().click();\ncy.get('[data-cy=\"confirm-delete-modal\"]').should('be.visible');\n// Cancelar la eliminación\ncy.get('[data-cy=\"cancel-delete-btn\"]').click();\n// Verificar que el modal se cierre\ncy.get('[data-cy=\"confirm-delete-modal\"]').should('not.exist');\n// Verificar que el curso siga en la tabla\ncy.contains(mockCourse.nombre).should('be.visible');",
+              "err": {},
+              "uuid": "0d20c191-02f7-4e76-bd4e-e3927e7f92f7",
+              "parentUUID": "7e4b8bcc-72ab-47e6-955a-c6ba25681e96",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "should delete course successfully",
+              "fullTitle": "Delete Course Functionality should delete course successfully",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Interceptar la llamada de eliminación\ncy.intercept('DELETE', `**/firestore.googleapis.com/**/courses/${mockCourse.id}`, {\n  statusCode: 200,\n  body: {}\n}).as('deleteCourse');\n// Interceptar la llamada para obtener cursos actualizados (sin el curso eliminado)\ncy.intercept('GET', '**/firestore.googleapis.com/**', {\n  statusCode: 200,\n  body: {\n    documents: [] // Lista vacía después de eliminar\n  }\n}).as('getCoursesAfterDelete');\n// Abrir modal de confirmación\ncy.get('[data-cy=\"delete-course-btn\"]').first().click();\ncy.get('[data-cy=\"confirm-delete-modal\"]').should('be.visible');\n// Confirmar la eliminación\ncy.get('[data-cy=\"confirm-delete-btn\"]').click();\n// Esperar la llamada de eliminación\ncy.wait('@deleteCourse');\n// Verificar que el modal se cierre\ncy.get('[data-cy=\"confirm-delete-modal\"]').should('not.exist');\n// Verificar que el curso ya no esté en la tabla\ncy.contains(mockCourse.nombre).should('not.exist');",
+              "err": {},
+              "uuid": "0d425e14-ea88-415d-b3de-e4821bdd62f0",
+              "parentUUID": "7e4b8bcc-72ab-47e6-955a-c6ba25681e96",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "should handle delete error gracefully",
+              "fullTitle": "Delete Course Functionality should handle delete error gracefully",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Interceptar la llamada de eliminación con error\ncy.intercept('DELETE', `**/firestore.googleapis.com/**/courses/${mockCourse.id}`, {\n  statusCode: 500,\n  body: {\n    error: 'Internal Server Error'\n  }\n}).as('deleteCourseFail');\n// Abrir modal de confirmación\ncy.get('[data-cy=\"delete-course-btn\"]').first().click();\ncy.get('[data-cy=\"confirm-delete-modal\"]').should('be.visible');\n// Confirmar la eliminación\ncy.get('[data-cy=\"confirm-delete-btn\"]').click();\n// Esperar la llamada fallida\ncy.wait('@deleteCourseFail');\n// Verificar que se muestre un mensaje de error\ncy.get('.alert-danger').should('be.visible');\ncy.contains('Error').should('be.visible');",
+              "err": {},
+              "uuid": "e5ba241f-5c6e-4989-8cf8-b5d9cfa7b137",
+              "parentUUID": "7e4b8bcc-72ab-47e6-955a-c6ba25681e96",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "should disable delete button while loading",
+              "fullTitle": "Delete Course Functionality should disable delete button while loading",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Interceptar con delay para simular carga\ncy.intercept('DELETE', `**/firestore.googleapis.com/**/courses/${mockCourse.id}`, req => {\n  req.reply(res => {\n    // Delay de 2 segundos\n    return new Promise(resolve => {\n      setTimeout(() => resolve(res.send({\n        statusCode: 200\n      })), 2000);\n    });\n  });\n}).as('deleteCourseSlow');\n// Abrir modal y confirmar eliminación\ncy.get('[data-cy=\"delete-course-btn\"]').first().click();\ncy.get('[data-cy=\"confirm-delete-btn\"]').click();\n// Verificar que el botón se deshabilite durante la carga\ncy.get('[data-cy=\"confirm-delete-btn\"]').should('be.disabled');\ncy.get('.spinner-border').should('be.visible');",
+              "err": {},
+              "uuid": "cd6cf8d5-2403-4f56-ab90-66438704a957",
+              "parentUUID": "7e4b8bcc-72ab-47e6-955a-c6ba25681e96",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "should update UI immediately after successful delete",
+              "fullTitle": "Delete Course Functionality should update UI immediately after successful delete",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Simular múltiples cursos\nconst multipleCourses = [mockCourse, _objectSpread(_objectSpread({}, mockCourse), {}, {\n  id: 'mock-course-id-2',\n  codigo: '0002',\n  nombre: 'CSS Test Course'\n})];\ncy.intercept('GET', '**/firestore.googleapis.com/**', {\n  statusCode: 200,\n  body: {\n    documents: multipleCourses.map(course => ({\n      name: `courses/${course.id}`,\n      fields: {\n        codigo: {\n          stringValue: course.codigo\n        },\n        nombre: {\n          stringValue: course.nombre\n        },\n        descripcion: {\n          stringValue: course.descripcion\n        },\n        precio: {\n          integerValue: course.precio\n        },\n        duracion: {\n          stringValue: course.duracion\n        },\n        cupos: {\n          integerValue: course.cupos\n        },\n        inscritos: {\n          integerValue: course.inscritos\n        },\n        estado: {\n          booleanValue: course.estado\n        },\n        img: {\n          stringValue: course.img\n        }\n      }\n    }))\n  }\n});\ncy.visit('/admin');\n// Verificar que ambos cursos estén presentes\ncy.contains('HTML Test Course').should('be.visible');\ncy.contains('CSS Test Course').should('be.visible');\n// Interceptar eliminación exitosa\ncy.intercept('DELETE', `**/firestore.googleapis.com/**/courses/${mockCourse.id}`, {\n  statusCode: 200\n}).as('deleteCourse');\n// Interceptar actualización de lista sin el curso eliminado\ncy.intercept('GET', '**/firestore.googleapis.com/**', {\n  statusCode: 200,\n  body: {\n    documents: [{\n      name: `courses/mock-course-id-2`,\n      fields: {\n        codigo: {\n          stringValue: '0002'\n        },\n        nombre: {\n          stringValue: 'CSS Test Course'\n        },\n        descripcion: {\n          stringValue: 'Test course description'\n        },\n        precio: {\n          integerValue: 20000\n        },\n        duracion: {\n          stringValue: '1 mes'\n        },\n        cupos: {\n          integerValue: 20\n        },\n        inscritos: {\n          integerValue: 0\n        },\n        estado: {\n          booleanValue: true\n        },\n        img: {\n          stringValue: 'https://example.com/css.png'\n        }\n      }\n    }]\n  }\n}).as('getUpdatedCourses');\n// Eliminar el primer curso\ncy.get('[data-cy=\"delete-course-btn\"]').first().click();\ncy.get('[data-cy=\"confirm-delete-btn\"]').click();\ncy.wait('@deleteCourse');\n// Verificar actualización de UI\ncy.contains('HTML Test Course').should('not.exist');\ncy.contains('CSS Test Course').should('be.visible');",
+              "err": {},
+              "uuid": "4459029f-9543-426e-984a-28a88a09594d",
+              "parentUUID": "7e4b8bcc-72ab-47e6-955a-c6ba25681e96",
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "47bb2788-c1f3-4932-9914-aa5bd4d9126d"
+          ],
+          "pending": [],
+          "skipped": [
+            "3ebdcb47-72c2-4a09-965b-2bd38942b5cb",
+            "0d20c191-02f7-4e76-bd4e-e3927e7f92f7",
+            "0d425e14-ea88-415d-b3de-e4821bdd62f0",
+            "e5ba241f-5c6e-4989-8cf8-b5d9cfa7b137",
+            "cd6cf8d5-2403-4f56-ab90-66438704a957",
+            "4459029f-9543-426e-984a-28a88a09594d"
+          ],
+          "duration": 7176,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.0"
+    }
+  }
+}
