@@ -19,6 +19,7 @@
           <BForm @submit.prevent="handleRegister">
             <BFormGroup 
               id="email-group" 
+              class="mb-3"
               label="Correo Electrónico:" 
               label-for="email"
             >
@@ -34,6 +35,7 @@
 
             <BFormGroup 
               id="password-group" 
+              class="mb-3"
               label="Contraseña:" 
               label-for="password"
             >
@@ -50,6 +52,7 @@
 
             <BFormGroup 
               id="confirm-password-group" 
+              class="mb-3"
               label="Confirmar Contraseña:" 
               label-for="confirmPassword"
             >
