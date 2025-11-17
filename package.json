@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:gh-pages": "vite build --mode gh-pages",
     "preview": "vite preview",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",

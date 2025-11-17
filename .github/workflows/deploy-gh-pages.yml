@@ -32,7 +32,7 @@ jobs:
         run: npm ci
 
       - name: Build project for GitHub Pages
-        run: npm run build -- --base=/examenmodulo7/
+        run: npm run build:gh-pages
 
       - name: Create SPA fallback
         run: cp dist/index.html dist/404.html
