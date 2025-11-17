@@ -97,7 +97,7 @@ El repositorio incluye un workflow (`.github/workflows/deploy-gh-pages.yml`) que
 2. Asegúrate de que los cambios estén en la rama `jp` (o ajusta el workflow si utilizas otra rama).
 3. Haz push a la rama objetivo o dispara el workflow manualmente desde la pestaña *Actions* (`Deploy to GitHub Pages`).
 
-El job ejecuta `npm run build -- --base=/examenmodulo7/`, genera un `404.html` para manejar el enrutamiento SPA y despliega el contenido de `dist`. El enlace público se podrá ver en la salida del job de despliegue.
+El job ejecuta `npm run build:gh-pages` (usa `vite build --mode gh-pages`), genera un `404.html` para manejar el enrutamiento SPA y despliega el contenido de `dist`. El enlace público se podrá ver en la salida del job de despliegue.
 
 ## 🎨 Tecnologías Utilizadas
 
