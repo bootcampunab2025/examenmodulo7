@@ -92,10 +92,10 @@ npm run report:html
 
 ## 🌐 Despliegue en GitHub Pages
 
-El workflow `.github/workflows/deploy-gh-pages.yml` construye la aplicación cuando haces push a `jp` (o disparas el job manualmente) y publica el contenido en la rama `gh-pages`. Pasos:
+El workflow `.github/workflows/deploy-gh-pages.yml` construye la aplicación cuando haces push a `jp` o `master` (o disparas el job manualmente) y publica el contenido en la rama `gh-pages`. Pasos:
 
 1. En **Settings ▸ Pages**, elige “Deploy from a branch” y selecciona `gh-pages` ▸ `/ (root)`.
-2. Realiza push a `jp` (o usa *Actions ▸ Deploy to GitHub Pages ▸ Run workflow*).
+2. Realiza push a `jp` o `master` (o usa *Actions ▸ Deploy to GitHub Pages ▸ Run workflow*).
 3. El job ejecuta `npm run build:gh-pages`, crea `dist/404.html` y empuja el resultado a la rama `gh-pages` con `peaceiris/actions-gh-pages`.
 
 Una vez que GitHub Pages detecte el commit nuevo en `gh-pages`, la URL `https://<usuario>.github.io/examenmodulo7/` se actualizará automáticamente.
