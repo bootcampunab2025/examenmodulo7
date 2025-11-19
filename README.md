@@ -9,6 +9,7 @@ Sistema de administración de cursos desarrollado con Vue 3, Firebase y Bootstra
 - ✅ **Base de datos en tiempo real**: Firestore para almacenamiento
 - ✅ **UI moderna**: Bootstrap Vue para estilos
 - ✅ **Gestión de estado**: Vuex 4 (módulos `auth` y `courses`)
+- ✅ **Catálogo público**: Home visible sin login; solo las rutas de gestión requieren autenticación
 - ✅ **Pruebas E2E**: Cypress para testing
 - ✅ **Responsive**: Adaptable a dispositivos móviles
 

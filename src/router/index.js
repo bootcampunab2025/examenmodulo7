@@ -8,7 +8,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/views/HomeView.vue'),
-      meta: { requiresAuth: true }
+      meta: { public: true }
     },
     {
       path: '/login',
