@@ -53,7 +53,8 @@
           <CourseCard 
             v-for="course in filteredCourses" 
             :key="course.id"
-            :course="course" 
+            :course="course"
+            @enroll="handleEnroll"
           />
         </div>
 
@@ -76,10 +77,14 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useCoursesStore } from '../stores/courses'
+import { useAuthStore } from '../stores/auth'
 import CourseCard from '../components/CourseCard.vue'
 
 const coursesStore = useCoursesStore()
+const authStore = useAuthStore()
+const router = useRouter()
 
 // Variables reactivas
 const filterType = ref('all')
@@ -111,6 +116,18 @@ onUnmounted(() => {
     unsubscribe.value()
   }
 })
+
+// CTA para inscribirse
+const handleEnroll = (course) => {
+  const checkoutRoute = { name: 'admin', query: { highlightedCourse: course.id } }
+
+  if (!authStore.isAuthenticated) {
+    router.push({ name: 'login', query: { redirect: router.resolve(checkoutRoute).href } })
+    return
+  }
+
+  router.push(checkoutRoute)
+}
 </script>
 
 <style scoped>

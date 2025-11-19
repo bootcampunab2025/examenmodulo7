@@ -100,6 +100,8 @@ El workflow `.github/workflows/deploy-gh-pages.yml` construye la aplicación cua
 
 Una vez que GitHub Pages detecte el commit nuevo en `gh-pages`, la URL `https://<usuario>.github.io/examenmodulo7/` se actualizará automáticamente.
 
+> 🔍 **Diagnóstico rápido**: si la página sigue en blanco después de un push, revisa en la pestaña **Actions** que el job “Deploy to GitHub Pages” haya terminado en verde y confirma en **Settings ▸ Pages** que la fuente sea la rama `gh-pages`. Sin esas dos condiciones, GitHub seguirá sirviendo el build anterior.
+
 ## 🎨 Tecnologías Utilizadas
 
 - **Vue 3**: Framework JavaScript reactivo
