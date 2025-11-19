@@ -27,6 +27,16 @@
 
       </div>
 
+      <!-- Guest CTA -->
+      <div v-else class="navbar-guest">
+        <button class="guest-btn ghost" @click="$router.push('/login')">
+          Iniciar sesión
+        </button>
+        <button class="guest-btn solid" @click="$router.push('/register')">
+          Registrarme
+        </button>
+      </div>
+
       <!-- User Section -->
       <div v-if="isAuthenticated" class="navbar-user">
         <div class="user-info">
@@ -199,6 +209,38 @@ export default {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.navbar-guest {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.guest-btn {
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.guest-btn.ghost:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.guest-btn.solid {
+  background: white;
+  color: #1976d2;
+  border-color: white;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+}
+
+.guest-btn.solid:hover {
+  transform: translateY(-1px);
 }
 
 .user-info {
