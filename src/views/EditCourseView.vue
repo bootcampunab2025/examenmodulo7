@@ -87,6 +87,18 @@
         </BButton>
       </template>
     </BModal>
+
+    <BModal
+      v-model="showSuccessUpdate"
+      title="Actualización exitosa"
+      centered
+      ok-only
+      ok-title="Aceptar"
+      @ok="handleUpdateSuccessClose"
+      @hidden="handleUpdateSuccessClose"
+    >
+      <p class="mb-0">{{ updateSuccessMessage }}</p>
+    </BModal>
   </div>
 </template>
 
@@ -116,6 +128,8 @@ const unsubscribe = ref(null)
 const showConfirmUpdate = ref(false)
 const editCourse = ref(null)
 const originalCourse = ref(null)
+const showSuccessUpdate = ref(false)
+const updateSuccessMessage = ref('')
 
 // Computed
 const isFormValid = computed(() => {
@@ -154,8 +168,15 @@ const updateCourse = async () => {
   showConfirmUpdate.value = false
   
   if (result.success) {
-    router.push('/admin')
+    updateSuccessMessage.value = 'El curso fue actualizado correctamente.'
+    showSuccessUpdate.value = true
   }
+}
+
+const handleUpdateSuccessClose = () => {
+  if (!showSuccessUpdate.value) return
+  showSuccessUpdate.value = false
+  router.push('/admin')
 }
 
 // Buscar el curso cuando cambien los cursos en el store

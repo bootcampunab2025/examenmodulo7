@@ -18,7 +18,15 @@
         </button>
         <button 
           class="nav-link" 
-          :class="{ active: $route.path === '/admin' }"
+          :class="{ active: $route.path === '/my-courses' }"
+          @click="$router.push('/my-courses')"
+        >
+          Mis Cursos
+        </button>
+        <button 
+          class="nav-link" 
+          v-if="isAdmin"
+          :class="{ active: $route.path.startsWith('/admin') }"
           @click="$router.push('/admin')"
         >
           Administrar
@@ -71,6 +79,7 @@ export default {
     const isAuthenticated = computed(() => authStore.isAuthenticated)
     const currentUser = computed(() => authStore.currentUser)
     const isLoading = computed(() => authStore.isLoading)
+    const isAdmin = computed(() => authStore.isAdmin)
     
 
 
@@ -96,6 +105,7 @@ export default {
       isAuthenticated,
       currentUser,
       isLoading,
+      isAdmin,
       handleLogout,
       navigateToAdmin
     }

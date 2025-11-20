@@ -9,7 +9,7 @@ Sistema de administración de cursos desarrollado con Vue 3, Firebase y Bootstra
 - ✅ **Base de datos en tiempo real**: Firestore para almacenamiento
 - ✅ **UI moderna**: Bootstrap Vue para estilos
 - ✅ **Gestión de estado**: Vuex 4 (módulos `auth` y `courses`)
-- ✅ **Catálogo público**: Home visible sin login; solo las rutas de gestión requieren autenticación
+- ✅ **Catálogo protegido**: Home y administración accesibles solo con sesión iniciada, tal como exige la rúbrica
 - ✅ **Pruebas E2E**: Cypress para testing
 - ✅ **Responsive**: Adaptable a dispositivos móviles
 
@@ -92,13 +92,15 @@ npm run report:html
 
 ## 🌐 Despliegue en GitHub Pages
 
-El workflow `.github/workflows/deploy-gh-pages.yml` construye la aplicación cuando haces push a `jp` (o disparas el job manualmente) y publica el contenido en la rama `gh-pages`. Pasos:
+El workflow `.github/workflows/deploy-gh-pages.yml` construye la aplicación cuando haces push a `jp` o `master` (o disparas el job manualmente) y publica el contenido en la rama `gh-pages`. Pasos:
 
 1. En **Settings ▸ Pages**, elige “Deploy from a branch” y selecciona `gh-pages` ▸ `/ (root)`.
-2. Realiza push a `jp` (o usa *Actions ▸ Deploy to GitHub Pages ▸ Run workflow*).
+2. Realiza push a `jp` o `master` (o usa *Actions ▸ Deploy to GitHub Pages ▸ Run workflow*).
 3. El job ejecuta `npm run build:gh-pages`, crea `dist/404.html` y empuja el resultado a la rama `gh-pages` con `peaceiris/actions-gh-pages`.
 
 Una vez que GitHub Pages detecte el commit nuevo en `gh-pages`, la URL `https://<usuario>.github.io/examenmodulo7/` se actualizará automáticamente.
+
+> 🔍 **Diagnóstico rápido**: si la página sigue en blanco después de un push, revisa en la pestaña **Actions** que el job “Deploy to GitHub Pages” haya terminado en verde y confirma en **Settings ▸ Pages** que la fuente sea la rama `gh-pages`. Sin esas dos condiciones, GitHub seguirá sirviendo el build anterior.
 
 ## 🎨 Tecnologías Utilizadas
 
@@ -127,3 +129,18 @@ Los cursos incluidos son:
 2. **CSS** - $20.000 - 1 mes - 20 cupos - Inactivo  
 3. **SASS** - $40.000 - 2 meses - 30 cupos - Activo
 4. **VUE** - $50.000 - 3 meses - 15 cupos - Inactivo
+
+## 👥 Usuarios de Prueba (Admin)
+
+Ejecuta el script para generar o actualizar los administradores predefinidos. Es idempotente: si el correo ya existe, solo vuelve a asignar el rol `admin`.
+
+```bash
+npm run seed:admins
+```
+
+| Email                       | Contraseña | Rol   | Descripción         |
+|-----------------------------|------------|-------|---------------------|
+| `admin.catalogo@adweb.com`  | `Admin123*`| admin | Responsable catálogo|
+| `admin.ventas@adweb.com`    | `Admin123*`| admin | Responsable ventas  |
+
+> Reemplaza las contraseñas en Firebase si llevarás el proyecto a producción. La app fuerza el rol `admin` en tiempo de ejecución para ambos correos incluso si el documento `userProfiles` aún no se actualiza.

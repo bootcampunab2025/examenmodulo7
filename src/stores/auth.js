@@ -16,6 +16,9 @@ export function useAuthStore() {
     get authReady() {
       return store.state.auth.authReady
     },
+    get profile() {
+      return store.state.auth.profile
+    },
     get justLoggedInAt() {
       return store.state.auth.justLoggedInAt
     },
@@ -30,6 +33,12 @@ export function useAuthStore() {
     },
     get currentUser() {
       return store.getters['auth/currentUser']
+    },
+    get currentRole() {
+      return store.getters['auth/currentRole']
+    },
+    get isAdmin() {
+      return store.getters['auth/isAdmin']
     },
     get isLoading() {
       return store.getters['auth/isLoading']
@@ -48,6 +57,12 @@ export function useAuthStore() {
     },
     logoutUser() {
       return store.dispatch('auth/logoutUser')
+    },
+    fetchUserProfile(user) {
+      return store.dispatch('auth/fetchUserProfile', user)
+    },
+    updateUserRole(payload) {
+      return store.dispatch('auth/updateUserRole', payload)
     },
     clearError() {
       store.commit('auth/clearError')

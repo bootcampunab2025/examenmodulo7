@@ -7,7 +7,12 @@
       class="course-image"
     />
     <BCardBody class="d-flex flex-column">
-      <BCardTitle>{{ course.nombre }}</BCardTitle>
+      <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+        <BCardTitle class="mb-0">{{ course.nombre }}</BCardTitle>
+        <BBadge :variant="course.estado ? 'success' : 'secondary'">
+          {{ course.estado ? 'Disponible' : 'Inactivo' }}
+        </BBadge>
+      </div>
       <BCardText class="flex-grow-1">
         <strong>Código:</strong> {{ course.codigo }}<br>
         <strong>Descripción:</strong> {{ course.descripcion }}<br>
@@ -18,13 +23,6 @@
       </BCardText>
       
       <div class="mt-auto">
-        <BBadge 
-          :variant="course.estado ? 'success' : 'secondary'"
-          class="mb-2"
-        >
-          {{ course.estado ? 'Activo' : 'Inactivo' }}
-        </BBadge>
-        
         <BProgressBar 
           :value="inscriptionPercentage" 
           :max="100"
@@ -35,6 +33,14 @@
         <small class="text-muted">
           {{ inscriptionPercentage }}% de cupos ocupados
         </small>
+
+        <button 
+          class="enroll-btn"
+          :disabled="!course.estado"
+          @click="$emit('enroll', course)"
+        >
+          {{ course.estado ? 'Agregar al carrito' : 'No disponible' }}
+        </button>
       </div>
     </BCardBody>
   </BCard>
@@ -114,5 +120,28 @@ export default {
 .card-text {
   font-size: 0.9rem;
   line-height: 1.6;
+}
+
+.enroll-btn {
+  width: 100%;
+  margin-top: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.enroll-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.enroll-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 </style>
