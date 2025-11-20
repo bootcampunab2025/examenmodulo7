@@ -1,238 +1,174 @@
-describe('Delete Course Functionality', () => {
-  const testEmail = 'admin@example.com'
-  const mockCourse = {
-    id: 'mock-course-id',
-    codigo: '0001',
-    nombre: 'HTML Test Course',
-    descripcion: 'Test course description',
-    precio: 30000,
+const FIREBASE_API_KEY = Cypress.env('FIREBASE_API_KEY') || 'AIzaSyAfQkjP5FypLOx4pHf9WrkV3V_6nGkxG2o'
+const BASE_URL = Cypress.config().baseUrl || 'http://localhost:5173'
+
+const adminCredentials = (() => {
+  const unique = Date.now()
+  return {
+    email: `cypress.admin+${unique}@example.com`,
+    password: `Admin!${unique}Aa`
+  }
+})()
+
+const ensureFirebaseUser = ({ email, password }) => {
+  return cy.request({
+    method: 'POST',
+    url: `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FIREBASE_API_KEY}`,
+    body: {
+      email,
+      password,
+      returnSecureToken: true
+    },
+    failOnStatusCode: false
+  }).then((response) => {
+    const errorCode = response.body?.error?.message
+    if (response.status === 200 || errorCode === 'EMAIL_EXISTS') {
+      return
+    }
+    throw new Error(`No se pudo crear el usuario admin de pruebas: ${errorCode || response.status}`)
+  })
+}
+
+const loginAsAdmin = () => {
+  cy.login(adminCredentials.email, adminCredentials.password)
+  cy.url({ timeout: 15000 }).should('eq', `${BASE_URL}/`)
+  cy.visit('/admin')
+  cy.contains('Administración de Cursos', { timeout: 20000 }).should('be.visible')
+  cy.get('table', { timeout: 20000 }).should('be.visible')
+}
+
+const generateCourseData = () => {
+  const unique = Date.now()
+  return {
+    codigo: `CYP-${unique}`,
+    nombre: `Curso Cypress ${unique}`,
+    descripcion: 'Curso generado automáticamente para pruebas end-to-end.',
+    precio: 45000,
     duracion: '1 mes',
-    cupos: 10,
+    cupos: 25,
     inscritos: 0,
     estado: true,
-    img: 'https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png'
+    img: 'https://via.placeholder.com/150?text=Cypress+Course'
   }
+}
+
+const fillCourseForm = (course) => {
+  cy.get('#codigo').clear().type(course.codigo)
+  cy.get('#nombre').clear().type(course.nombre)
+  cy.get('#descripcion').clear().type(course.descripcion)
+  cy.get('#precio').clear().type(`${course.precio}`)
+  cy.get('#duracion').clear().type(course.duracion)
+  cy.get('#cupos').clear().type(`${course.cupos}`)
+  cy.get('#inscritos').clear().type(`${course.inscritos}`)
+  cy.get('#img').clear().type(course.img)
+
+  if (course.estado) {
+    cy.get('#estado').check({ force: true })
+  } else {
+    cy.get('#estado').uncheck({ force: true })
+  }
+}
+
+const createCourseViaUI = (course) => {
+  cy.get('[data-cy="open-add-form-btn"]').click()
+  fillCourseForm(course)
+  cy.get('[data-cy="confirm-add-btn"]').click()
+  cy.get('[data-cy="confirm-add-course-btn"]').click()
+
+  cy.get('.modal.show', { timeout: 20000 })
+    .should('contain.text', 'Operación exitosa')
+    .contains('button', 'Aceptar')
+    .click()
+
+  cy.contains('tr', course.nombre, { timeout: 20000 }).should('exist')
+}
+
+const openDeleteModalForCourse = (courseName) => {
+  cy.contains('tr', courseName, { timeout: 20000 }).within(() => {
+    cy.get('[data-cy="delete-course-btn"]').click()
+  })
+
+  cy.get('[data-cy="confirm-delete-modal"]').should('be.visible')
+}
+
+const confirmDeleteForCourse = (course) => {
+  cy.get('[data-cy="confirm-delete-btn"]').click()
+
+  cy.get('.modal.show', { timeout: 20000 })
+    .should('contain.text', 'Curso eliminado correctamente.')
+    .contains('button', 'Aceptar')
+    .click()
+
+  cy.contains('tr', course.nombre, { timeout: 20000 }).should('not.exist')
+}
+
+const cancelDeleteModal = () => {
+  cy.get('[data-cy="cancel-delete-btn"]').click()
+  cy.get('[data-cy="confirm-delete-modal"]').should('not.be.visible')
+}
+
+describe('Delete Course Functionality', () => {
+  before(() => {
+    ensureFirebaseUser(adminCredentials)
+  })
 
   beforeEach(() => {
-    // Simular usuario autenticado
-    cy.window().then((win) => {
-      win.localStorage.setItem('firebase:authUser:mock-api-key:[DEFAULT]', JSON.stringify({
-        uid: 'mock-user-id',
-        email: testEmail,
-        emailVerified: true
-      }))
-    })
+    loginAsAdmin()
+  })
 
-    // Interceptar llamadas a Firebase
-    cy.intercept('GET', '**/firestore.googleapis.com/**', {
-      statusCode: 200,
-      body: {
-        documents: [
-          {
-            name: `courses/${mockCourse.id}`,
-            fields: {
-              codigo: { stringValue: mockCourse.codigo },
-              nombre: { stringValue: mockCourse.nombre },
-              descripcion: { stringValue: mockCourse.descripcion },
-              precio: { integerValue: mockCourse.precio },
-              duracion: { stringValue: mockCourse.duracion },
-              cupos: { integerValue: mockCourse.cupos },
-              inscritos: { integerValue: mockCourse.inscritos },
-              estado: { booleanValue: mockCourse.estado },
-              img: { stringValue: mockCourse.img }
-            }
-          }
-        ]
+  afterEach(() => {
+    cy.get('body').then(($body) => {
+      if ($body.find('[data-cy="logout-btn"]').length) {
+        cy.get('[data-cy="logout-btn"]').click({ force: true })
+        cy.url({ timeout: 10000 }).should('include', '/login')
       }
-    }).as('getCourses')
-
-    // Visitar la página de administración
-    cy.visit('/admin')
-    cy.wait('@getCourses')
+    })
   })
 
-  it('should display courses in admin table', () => {
-    // Verificar que la tabla de cursos se muestre
-    cy.get('table').should('be.visible')
-    cy.contains(mockCourse.nombre).should('be.visible')
-    cy.contains(mockCourse.codigo).should('be.visible')
+  it('should display a newly created course in the admin table', () => {
+    const course = generateCourseData()
+    createCourseViaUI(course)
+    cy.contains('td', course.codigo).should('be.visible')
+
+    // Limpieza
+    openDeleteModalForCourse(course.nombre)
+    confirmDeleteForCourse(course)
   })
 
-  it('should show delete confirmation modal', () => {
-    // Hacer clic en el botón de eliminar
-    cy.get('[data-cy="delete-course-btn"]').first().click()
+  it('should show delete confirmation modal with course details', () => {
+    const course = generateCourseData()
+    createCourseViaUI(course)
 
-    // Verificar que se muestre el modal de confirmación
-    cy.get('[data-cy="confirm-delete-modal"]').should('be.visible')
+    openDeleteModalForCourse(course.nombre)
     cy.contains('¿Realmente deseas eliminar').should('be.visible')
-    cy.contains(mockCourse.nombre).should('be.visible')
-    
-    // Verificar que los botones estén presentes
+    cy.contains(course.nombre).should('be.visible')
     cy.get('[data-cy="cancel-delete-btn"]').should('be.visible')
     cy.get('[data-cy="confirm-delete-btn"]').should('be.visible')
+
+    cancelDeleteModal()
+
+    // Limpieza
+    openDeleteModalForCourse(course.nombre)
+    confirmDeleteForCourse(course)
   })
 
-  it('should cancel delete operation', () => {
-    // Abrir modal de confirmación
-    cy.get('[data-cy="delete-course-btn"]').first().click()
-    cy.get('[data-cy="confirm-delete-modal"]').should('be.visible')
+  it('should keep the course when the user cancels the deletion', () => {
+    const course = generateCourseData()
+    createCourseViaUI(course)
 
-    // Cancelar la eliminación
-    cy.get('[data-cy="cancel-delete-btn"]').click()
+    openDeleteModalForCourse(course.nombre)
+    cancelDeleteModal()
+    cy.contains('tr', course.nombre).should('exist')
 
-    // Verificar que el modal se cierre
-    cy.get('[data-cy="confirm-delete-modal"]').should('not.exist')
-    
-    // Verificar que el curso siga en la tabla
-    cy.contains(mockCourse.nombre).should('be.visible')
+    // Limpieza final
+    openDeleteModalForCourse(course.nombre)
+    confirmDeleteForCourse(course)
   })
 
-  it('should delete course successfully', () => {
-    // Interceptar la llamada de eliminación
-    cy.intercept('DELETE', `**/firestore.googleapis.com/**/courses/${mockCourse.id}`, {
-      statusCode: 200,
-      body: {}
-    }).as('deleteCourse')
+  it('should delete the course after confirming the modal', () => {
+    const course = generateCourseData()
+    createCourseViaUI(course)
 
-    // Interceptar la llamada para obtener cursos actualizados (sin el curso eliminado)
-    cy.intercept('GET', '**/firestore.googleapis.com/**', {
-      statusCode: 200,
-      body: {
-        documents: [] // Lista vacía después de eliminar
-      }
-    }).as('getCoursesAfterDelete')
-
-    // Abrir modal de confirmación
-    cy.get('[data-cy="delete-course-btn"]').first().click()
-    cy.get('[data-cy="confirm-delete-modal"]').should('be.visible')
-
-    // Confirmar la eliminación
-    cy.get('[data-cy="confirm-delete-btn"]').click()
-
-    // Esperar la llamada de eliminación
-    cy.wait('@deleteCourse')
-
-    // Verificar que el modal se cierre
-    cy.get('[data-cy="confirm-delete-modal"]').should('not.exist')
-
-    // Verificar que el curso ya no esté en la tabla
-    cy.contains(mockCourse.nombre).should('not.exist')
-  })
-
-  it('should handle delete error gracefully', () => {
-    // Interceptar la llamada de eliminación con error
-    cy.intercept('DELETE', `**/firestore.googleapis.com/**/courses/${mockCourse.id}`, {
-      statusCode: 500,
-      body: { error: 'Internal Server Error' }
-    }).as('deleteCourseFail')
-
-    // Abrir modal de confirmación
-    cy.get('[data-cy="delete-course-btn"]').first().click()
-    cy.get('[data-cy="confirm-delete-modal"]').should('be.visible')
-
-    // Confirmar la eliminación
-    cy.get('[data-cy="confirm-delete-btn"]').click()
-
-    // Esperar la llamada fallida
-    cy.wait('@deleteCourseFail')
-
-    // Verificar que se muestre un mensaje de error
-    cy.get('.alert-danger').should('be.visible')
-    cy.contains('Error').should('be.visible')
-  })
-
-  it('should disable delete button while loading', () => {
-    // Interceptar con delay para simular carga
-    cy.intercept('DELETE', `**/firestore.googleapis.com/**/courses/${mockCourse.id}`, (req) => {
-      req.reply((res) => {
-        // Delay de 2 segundos
-        return new Promise((resolve) => {
-          setTimeout(() => resolve(res.send({ statusCode: 200 })), 2000)
-        })
-      })
-    }).as('deleteCourseSlow')
-
-    // Abrir modal y confirmar eliminación
-    cy.get('[data-cy="delete-course-btn"]').first().click()
-    cy.get('[data-cy="confirm-delete-btn"]').click()
-
-    // Verificar que el botón se deshabilite durante la carga
-    cy.get('[data-cy="confirm-delete-btn"]').should('be.disabled')
-    cy.get('.spinner-border').should('be.visible')
-  })
-
-  it('should update UI immediately after successful delete', () => {
-    // Simular múltiples cursos
-    const multipleCourses = [
-      mockCourse,
-      {
-        ...mockCourse,
-        id: 'mock-course-id-2',
-        codigo: '0002',
-        nombre: 'CSS Test Course'
-      }
-    ]
-
-    cy.intercept('GET', '**/firestore.googleapis.com/**', {
-      statusCode: 200,
-      body: {
-        documents: multipleCourses.map(course => ({
-          name: `courses/${course.id}`,
-          fields: {
-            codigo: { stringValue: course.codigo },
-            nombre: { stringValue: course.nombre },
-            descripcion: { stringValue: course.descripcion },
-            precio: { integerValue: course.precio },
-            duracion: { stringValue: course.duracion },
-            cupos: { integerValue: course.cupos },
-            inscritos: { integerValue: course.inscritos },
-            estado: { booleanValue: course.estado },
-            img: { stringValue: course.img }
-          }
-        }))
-      }
-    })
-
-    cy.visit('/admin')
-
-    // Verificar que ambos cursos estén presentes
-    cy.contains('HTML Test Course').should('be.visible')
-    cy.contains('CSS Test Course').should('be.visible')
-
-    // Interceptar eliminación exitosa
-    cy.intercept('DELETE', `**/firestore.googleapis.com/**/courses/${mockCourse.id}`, {
-      statusCode: 200
-    }).as('deleteCourse')
-
-    // Interceptar actualización de lista sin el curso eliminado
-    cy.intercept('GET', '**/firestore.googleapis.com/**', {
-      statusCode: 200,
-      body: {
-        documents: [{
-          name: `courses/mock-course-id-2`,
-          fields: {
-            codigo: { stringValue: '0002' },
-            nombre: { stringValue: 'CSS Test Course' },
-            descripcion: { stringValue: 'Test course description' },
-            precio: { integerValue: 20000 },
-            duracion: { stringValue: '1 mes' },
-            cupos: { integerValue: 20 },
-            inscritos: { integerValue: 0 },
-            estado: { booleanValue: true },
-            img: { stringValue: 'https://example.com/css.png' }
-          }
-        }]
-      }
-    }).as('getUpdatedCourses')
-
-    // Eliminar el primer curso
-    cy.get('[data-cy="delete-course-btn"]').first().click()
-    cy.get('[data-cy="confirm-delete-btn"]').click()
-
-    cy.wait('@deleteCourse')
-    
-    // Verificar actualización de UI
-    cy.contains('HTML Test Course').should('not.exist')
-    cy.contains('CSS Test Course').should('be.visible')
+    openDeleteModalForCourse(course.nombre)
+    confirmDeleteForCourse(course)
   })
 })

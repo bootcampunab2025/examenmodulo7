@@ -39,7 +39,7 @@
           :disabled="!course.estado"
           @click="$emit('enroll', course)"
         >
-          {{ course.estado ? 'Inscribirme' : 'No disponible' }}
+          {{ course.estado ? 'Agregar al carrito' : 'No disponible' }}
         </button>
       </div>
     </BCardBody>

@@ -48,6 +48,65 @@
           </div>
         </div>
 
+        <!-- Carrito -->
+        <div v-if="authStore.isAuthenticated" class="cart-section">
+          <div class="cart-header">
+            <h3>Tu carrito</h3>
+            <span class="badge bg-primary rounded-pill">
+              {{ ordersStore.cartItemsCount }} curso(s)
+            </span>
+          </div>
+
+          <p class="cart-helper" v-if="!ordersStore.hasItemsInCart">
+            Aún no agregas cursos. Pulsa "Inscribirme" para sumarlos aquí.
+          </p>
+
+          <ul class="cart-list" v-else>
+            <li v-for="item in ordersStore.cartItems" :key="item.courseId" class="cart-item">
+              <div>
+                <strong>{{ item.nombre }}</strong>
+                <p class="mb-0 text-muted">{{ item.codigo }}</p>
+              </div>
+              <div class="cart-item-actions">
+                <span class="fw-semibold">${{ item.precio.toLocaleString('es-CL') }}</span>
+                <button class="btn btn-link btn-sm text-danger" @click="removeItem(item.courseId)">
+                  Quitar
+                </button>
+              </div>
+            </li>
+          </ul>
+
+          <div class="cart-actions">
+            <div>
+              <p class="mb-1 text-muted">Total estimado</p>
+              <h4 class="mb-0">${{ ordersStore.cartTotal.toLocaleString('es-CL') }}</h4>
+            </div>
+            <div class="d-flex gap-2 flex-column flex-sm-row">
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                @click="ordersStore.clearCart()"
+                :disabled="!ordersStore.hasItemsInCart"
+              >
+                Vaciar
+              </button>
+              <button
+                class="btn btn-success"
+                type="button"
+                @click="handleCheckout"
+                :disabled="checkoutLoading || !ordersStore.hasItemsInCart"
+              >
+                <span v-if="checkoutLoading" class="spinner-border spinner-border-sm me-2"></span>
+                Finalizar compra
+              </button>
+            </div>
+          </div>
+
+          <div v-if="cartMessage" class="alert mt-3" :class="`alert-${cartMessage.type}`">
+            {{ cartMessage.text }}
+          </div>
+        </div>
+
         <!-- Grid de cursos -->
         <div v-if="filteredCourses.length > 0" class="courses-grid">
           <CourseCard 
@@ -65,7 +124,7 @@
             <p class="no-courses-text">
               {{ filterType === 'active' ? 'No hay cursos activos en este momento.' : 'No se encontraron cursos.' }}
             </p>
-            <button class="add-course-btn" @click="$router.push('/admin')">
+            <button v-if="authStore.isAdmin" class="add-course-btn" @click="$router.push('/admin')">
               Agregar Cursos
             </button>
           </div>
@@ -76,19 +135,23 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCoursesStore } from '../stores/courses'
 import { useAuthStore } from '../stores/auth'
+import { useOrdersStore } from '../stores/orders'
 import CourseCard from '../components/CourseCard.vue'
 
 const coursesStore = useCoursesStore()
 const authStore = useAuthStore()
+const ordersStore = useOrdersStore()
 const router = useRouter()
 
 // Variables reactivas
 const filterType = ref('all')
 const unsubscribe = ref(null)
+const cartMessage = ref(null)
+const checkoutLoading = ref(false)
 
 // Opciones de filtro
 const filterOptions = [
@@ -105,28 +168,78 @@ const filteredCourses = computed(() => {
 })
 
 // Lifecycle hooks
-onMounted(() => {
+onMounted(async () => {
   // Inicializar listener en tiempo real
-  unsubscribe.value = coursesStore.initCoursesListener()
+  const listener = await coursesStore.initCoursesListener()
+  if (typeof listener === 'function') {
+    unsubscribe.value = listener
+  }
 })
 
 onUnmounted(() => {
   // Limpiar listener
-  if (unsubscribe.value) {
+  if (typeof unsubscribe.value === 'function') {
     unsubscribe.value()
   }
 })
 
-// CTA para inscribirse
-const handleEnroll = (course) => {
-  const checkoutRoute = { name: 'admin', query: { highlightedCourse: course.id } }
+watch(
+  () => authStore.isAuthenticated,
+  async (loggedIn) => {
+    if (loggedIn) {
+      try {
+        await ordersStore.ensureCart()
+        await ordersStore.fetchUserCourses()
+      } catch (error) {
+        cartMessage.value = { type: 'danger', text: 'No se pudo preparar tu carrito.' }
+      }
+    } else {
+      cartMessage.value = null
+    }
+  },
+  { immediate: true }
+)
 
+// CTA para inscribirse
+const handleEnroll = async (course) => {
   if (!authStore.isAuthenticated) {
-    router.push({ name: 'login', query: { redirect: router.resolve(checkoutRoute).href } })
+    router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
     return
   }
 
-  router.push(checkoutRoute)
+  const result = await ordersStore.addCourseToCart(course)
+
+  if (result?.success) {
+    if (result.duplicated) {
+      cartMessage.value = { type: 'info', text: 'Este curso ya está en tu carrito.' }
+    } else {
+      cartMessage.value = { type: 'success', text: 'Curso agregado al carrito.' }
+    }
+  } else {
+    cartMessage.value = { type: 'danger', text: result?.error || 'No se pudo agregar el curso.' }
+  }
+}
+
+const handleCheckout = async () => {
+  if (!ordersStore.hasItemsInCart) {
+    cartMessage.value = { type: 'info', text: 'Agrega cursos antes de finalizar.' }
+    return
+  }
+
+  checkoutLoading.value = true
+  const result = await ordersStore.checkoutCart()
+  checkoutLoading.value = false
+
+  if (result?.success) {
+    cartMessage.value = { type: 'success', text: 'Compra finalizada. Revisa "Mis Cursos".' }
+    router.push({ name: 'my-courses' })
+  } else {
+    cartMessage.value = { type: 'danger', text: result?.error || 'No se pudo completar la compra.' }
+  }
+}
+
+const removeItem = async (id) => {
+  await ordersStore.removeCourseFromCart(id)
 }
 </script>
 
@@ -291,6 +404,58 @@ const handleEnroll = (course) => {
   padding: 1rem 0;
 }
 
+.cart-section {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  margin-bottom: 2rem;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.cart-helper {
+  margin-bottom: 0;
+  color: #607d8b;
+}
+
+.cart-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.cart-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cart-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
 /* No Courses Section */
 .no-courses-section {
   text-align: center;
@@ -389,6 +554,11 @@ const handleEnroll = (course) => {
   .filter-btn {
     padding: 0.6rem 1.5rem;
     font-size: 0.9rem;
+  }
+
+  .cart-actions {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isSeedAdmin() {
+      return isSignedIn() && request.auth.token.email != null && (
+        request.auth.token.email == 'admin.catalogo@adweb.com' ||
+        request.auth.token.email == 'admin.ventas@adweb.com'
+      );
+    }
+
+    function isAdmin(userId) {
+      return isSignedIn() && userId != null &&
+        exists(/databases/$(database)/documents/userProfiles/$(userId)) &&
+        get(/databases/$(database)/documents/userProfiles/$(userId)).data.role == 'admin';
+    }
+
+    function roleIsChanging() {
+      return resource != null && resource.data.role != request.resource.data.role;
+    }
+
+    match /userProfiles/{userId} {
+      allow read: if isOwner(userId) || isAdmin(request.auth.uid);
+
+      allow create: if isOwner(userId)
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && (
+          request.resource.data.role == 'user' ||
+          (isSeedAdmin() && request.resource.data.role == 'admin')
+        );
+
+      allow update: if isAdmin(request.auth.uid)
+        || (
+          isOwner(userId)
+          && request.resource.data.uid == resource.data.uid
+          && request.resource.data.email == resource.data.email
+          && (
+            !roleIsChanging() ||
+            (isSeedAdmin() && request.resource.data.role == 'admin')
+          )
+        );
+
+      allow delete: if isAdmin(request.auth.uid);
+    }
+
+    match /courses/{courseId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin(request.auth.uid);
+    }
+
+    match /orders/{orderId} {
+      function isOrderOwner() {
+        return resource != null && resource.data.userId == request.auth.uid;
+      }
+
+      allow read: if isSignedIn() && (isOrderOwner() || isAdmin(request.auth.uid));
+
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'pending';
+
+      allow update: if isSignedIn() && (
+        (
+          isOrderOwner()
+          && request.resource.data.userId == resource.data.userId
+        ) || isAdmin(request.auth.uid)
+      );
+
+      allow delete: if isAdmin(request.auth.uid);
+    }
+
+    match /userCourses/{userId}/courses/{courseDocId} {
+      allow read: if isOwner(userId) || isAdmin(request.auth.uid);
+
+      allow create, update, delete: if isOwner(userId)
+        && request.resource.data.userId == request.auth.uid;
+    }
+  }
+}

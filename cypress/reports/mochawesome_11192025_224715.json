@@ -1,0 +1,163 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-11-20T01:45:58.737Z",
+    "end": "2025-11-20T01:47:15.503Z",
+    "duration": 76766,
+    "testsRegistered": 4,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "c840d2f6-1c98-48db-9c62-556b3e9cb0da",
+      "title": "",
+      "fullFile": "cypress\\e2e\\delete-course.cy.js",
+      "file": "cypress\\e2e\\delete-course.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "18244b51-887d-4752-aad0-ef110c911695",
+          "title": "Delete Course Functionality",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display a newly created course in the admin table",
+              "fullTitle": "Delete Course Functionality should display a newly created course in the admin table",
+              "timedOut": null,
+              "duration": 17657,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const course = generateCourseData();\ncreateCourseViaUI(course);\ncy.contains('td', course.codigo).should('be.visible');\n// Limpieza\nopenDeleteModalForCourse(course.nombre);\nconfirmDeleteForCourse(course);",
+              "err": {},
+              "uuid": "a80fdaf4-1947-4822-b271-121dac9743ec",
+              "parentUUID": "18244b51-887d-4752-aad0-ef110c911695",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show delete confirmation modal with course details",
+              "fullTitle": "Delete Course Functionality should show delete confirmation modal with course details",
+              "timedOut": null,
+              "duration": 23882,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const course = generateCourseData();\ncreateCourseViaUI(course);\nopenDeleteModalForCourse(course.nombre);\ncy.contains('¿Realmente deseas eliminar').should('be.visible');\ncy.contains(course.nombre).should('be.visible');\ncy.get('[data-cy=\"cancel-delete-btn\"]').should('be.visible');\ncy.get('[data-cy=\"confirm-delete-btn\"]').should('be.visible');\ncancelDeleteModal();\n// Limpieza\nopenDeleteModalForCourse(course.nombre);\nconfirmDeleteForCourse(course);",
+              "err": {},
+              "uuid": "726ff4b8-5d27-402c-a067-7a5dab0baea8",
+              "parentUUID": "18244b51-887d-4752-aad0-ef110c911695",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should keep the course when the user cancels the deletion",
+              "fullTitle": "Delete Course Functionality should keep the course when the user cancels the deletion",
+              "timedOut": null,
+              "duration": 13382,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const course = generateCourseData();\ncreateCourseViaUI(course);\nopenDeleteModalForCourse(course.nombre);\ncancelDeleteModal();\ncy.contains('tr', course.nombre).should('exist');\n// Limpieza final\nopenDeleteModalForCourse(course.nombre);\nconfirmDeleteForCourse(course);",
+              "err": {},
+              "uuid": "25c29df4-3b19-4740-a782-c6d84e561ddd",
+              "parentUUID": "18244b51-887d-4752-aad0-ef110c911695",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should delete the course after confirming the modal",
+              "fullTitle": "Delete Course Functionality should delete the course after confirming the modal",
+              "timedOut": null,
+              "duration": 17249,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const course = generateCourseData();\ncreateCourseViaUI(course);\nopenDeleteModalForCourse(course.nombre);\nconfirmDeleteForCourse(course);",
+              "err": {},
+              "uuid": "6133a407-a7be-4f91-81be-f70910f62113",
+              "parentUUID": "18244b51-887d-4752-aad0-ef110c911695",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a80fdaf4-1947-4822-b271-121dac9743ec",
+            "726ff4b8-5d27-402c-a067-7a5dab0baea8",
+            "25c29df4-3b19-4740-a782-c6d84e561ddd",
+            "6133a407-a7be-4f91-81be-f70910f62113"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 72170,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.0"
+    }
+  }
+}

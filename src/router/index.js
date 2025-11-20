@@ -8,7 +8,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/views/HomeView.vue'),
-      meta: { public: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -26,14 +26,20 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: () => import('@/views/AdminView.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
       path: '/admin/edit/:id',
       name: 'edit-course',
       component: () => import('@/views/EditCourseView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresAdmin: true },
       props: true
+    },
+    {
+      path: '/my-courses',
+      name: 'my-courses',
+      component: () => import('@/views/MyCoursesView.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })
@@ -47,6 +53,7 @@ router.beforeEach(async (to, from) => {
 
   const requiresAuth = to.matched.some(r => r.meta?.requiresAuth)
   const requiresGuest = to.matched.some(r => r.meta?.requiresGuest)
+  const requiresAdmin = to.matched.some(r => r.meta?.requiresAdmin)
 
   if (requiresAuth && !auth.isAuthenticated) {
     if (to.name !== 'login') {
@@ -64,6 +71,10 @@ router.beforeEach(async (to, from) => {
       return { name: 'home', replace: true }
     }
     return true
+  }
+
+  if (requiresAdmin && !auth.isAdmin) {
+    return { name: 'home', replace: true }
   }
 
   return true

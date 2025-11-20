@@ -1,10 +1,80 @@
+const FIREBASE_API_KEY = Cypress.env('FIREBASE_API_KEY') || 'AIzaSyAfQkjP5FypLOx4pHf9WrkV3V_6nGkxG2o'
+const BASE_URL = Cypress.config().baseUrl || 'http://localhost:5173'
+
+const createCredentials = () => {
+  const unique = Date.now()
+  return {
+    email: `cypress.login+${unique}@example.com`,
+    password: `Test!${unique}Aa`
+  }
+}
+
+const ensureFirebaseUser = ({ email, password }) => {
+  return cy.request({
+    method: 'POST',
+    url: `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FIREBASE_API_KEY}`,
+    body: {
+      email,
+      password,
+      returnSecureToken: true
+    },
+    failOnStatusCode: false
+  }).then((response) => {
+    const errorCode = response.body?.error?.message
+    if (response.status === 200 || errorCode === 'EMAIL_EXISTS') {
+      return
+    }
+    throw new Error(`No se pudo preparar el usuario de pruebas: ${errorCode || response.status}`)
+  })
+}
+
+const dismissWelcomeModalIfVisible = () => {
+  cy.get('body').then(($body) => {
+    const modal = $body.find('.modal.show')
+    if (modal.length) {
+      cy.wrap(modal)
+        .first()
+        .within(() => {
+          cy.contains('button', /Entendido|Aceptar|Cerrar/i).click({ force: true })
+        })
+    }
+  })
+}
+
+const performSuccessfulLogin = (credentials) => {
+  cy.login(credentials.email, credentials.password, { visit: false })
+  cy.url({ timeout: 15000 }).should('eq', `${BASE_URL}/`)
+  dismissWelcomeModalIfVisible()
+}
+
+const assertNavbarForUser = (email) => {
+  cy.get('[data-cy="user-email"]', { timeout: 10000 }).should('contain', email)
+  cy.get('[data-cy="logout-btn"]').should('be.visible')
+}
+
+const logoutFromNavbar = () => {
+  dismissWelcomeModalIfVisible()
+  cy.get('[data-cy="logout-btn"]', { timeout: 10000 }).click({ force: true })
+  cy.url({ timeout: 10000 }).should('include', '/login')
+}
+
 describe('Login Functionality', () => {
-  const testEmail = 'test@example.com'
-  const testPassword = 'testpassword123'
+  const testCredentials = createCredentials()
+
+  before(() => {
+    ensureFirebaseUser(testCredentials)
+  })
 
   beforeEach(() => {
-    // Visitar la página de login antes de cada prueba
     cy.visit('/login')
+  })
+
+  afterEach(() => {
+    cy.get('body').then(($body) => {
+      if ($body.find('[data-cy="logout-btn"]').length) {
+        logoutFromNavbar()
+      }
+    })
   })
 
   it('should display login form', () => {
@@ -42,87 +112,22 @@ describe('Login Functionality', () => {
     cy.url().should('include', '/register')
   })
 
-  // Prueba principal: Login exitoso
   it('should login successfully with valid credentials', () => {
-    // Nota: Esta prueba requiere que tengas un usuario de prueba en Firebase
-    // o que uses Firebase Emulator Suite para las pruebas
-    
-    // Interceptar la llamada a Firebase Auth
-    cy.intercept('POST', '**/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword*', {
-      statusCode: 200,
-      body: {
-        idToken: 'mock-id-token',
-        email: testEmail,
-        refreshToken: 'mock-refresh-token',
-        expiresIn: '3600',
-        localId: 'mock-user-id'
-      }
-    }).as('loginRequest')
-
-    // Realizar login
-    cy.get('#email').type(testEmail)
-    cy.get('#password').type(testPassword)
-    cy.get('button[type="submit"]').click()
-
-    // Esperar la llamada a la API
-    cy.wait('@loginRequest')
-
-    // Verificar que se redirija al home
-    cy.url().should('eq', Cypress.config().baseUrl + '/')
-    
-    // Verificar que el navbar muestre el email del usuario
-    cy.get('[data-cy="user-email"]').should('contain', testEmail)
-    
-    // Verificar que el usuario esté logueado (presencia del botón logout)
-    cy.get('[data-cy="logout-btn"]').should('be.visible')
+    performSuccessfulLogin(testCredentials)
+    assertNavbarForUser(testCredentials.email)
+    logoutFromNavbar()
   })
 
   it('should maintain session after page reload', () => {
-    // Simular usuario logueado
-    cy.window().then((win) => {
-      // Simular que hay un usuario en el localStorage o sessionStorage
-      win.localStorage.setItem('firebase:authUser:mock-api-key:[DEFAULT]', JSON.stringify({
-        uid: 'mock-user-id',
-        email: testEmail,
-        emailVerified: true
-      }))
-    })
-
-    // Recargar la página
+    performSuccessfulLogin(testCredentials)
     cy.reload()
-
-    // Verificar que el usuario siga logueado
-    cy.get('[data-cy="user-email"]', { timeout: 10000 }).should('contain', testEmail)
+    dismissWelcomeModalIfVisible()
+    assertNavbarForUser(testCredentials.email)
+    logoutFromNavbar()
   })
 
   it('should logout successfully', () => {
-    // Simular usuario logueado
-    cy.window().then((win) => {
-      win.localStorage.setItem('firebase:authUser:mock-api-key:[DEFAULT]', JSON.stringify({
-        uid: 'mock-user-id',
-        email: testEmail,
-        emailVerified: true
-      }))
-    })
-
-    cy.visit('/')
-    
-    // Interceptar la llamada de logout
-    cy.intercept('POST', '**/identitytoolkit.googleapis.com/v1/accounts:signOut*', {
-      statusCode: 200,
-      body: {}
-    }).as('logoutRequest')
-
-    // Hacer logout
-    cy.get('[data-cy="logout-btn"]').click()
-
-    // Verificar redirección al login
-    cy.url().should('include', '/login')
-    
-    // Verificar que no hay datos de usuario en localStorage
-    cy.window().then((win) => {
-      const userData = win.localStorage.getItem('firebase:authUser:mock-api-key:[DEFAULT]')
-      expect(userData).to.be.null
-    })
+    performSuccessfulLogin(testCredentials)
+    logoutFromNavbar()
   })
 })

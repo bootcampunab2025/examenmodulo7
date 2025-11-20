@@ -41,6 +41,55 @@
       Error: {{ coursesStore.getError }}
     </BAlert>
 
+    <BAlert
+      v-if="hasIncompleteCourses"
+      variant="warning"
+      class="mb-4 d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3"
+    >
+      <div>
+        <strong>{{ incompleteCourses.length }} curso(s) incompletos detectados.</strong>
+        <p class="mb-0 small text-muted">
+          Algunos registros no tienen nombre o imagen. Puedes eliminarlos para limpiar la tabla.
+        </p>
+      </div>
+      <BButton
+        variant="warning"
+        class="text-nowrap"
+        @click="removeIncompleteCourses"
+        :disabled="isCleaningIncomplete"
+      >
+        <span v-if="isCleaningIncomplete" class="spinner-border spinner-border-sm me-2"></span>
+        Eliminar cursos vacíos
+      </BButton>
+    </BAlert>
+
+    <BCard v-if="showRoleManager" class="mb-4">
+      <h2 class="h5 mb-3">Gestión de Roles</h2>
+      <p class="text-muted small mb-3">Asigna permisos de administrador ingresando el correo registrado del usuario.</p>
+      <form @submit.prevent="assignAdminRole" class="d-flex flex-column flex-md-row gap-2 align-items-md-center">
+        <input
+          v-model.trim="roleUpdateEmail"
+          type="email"
+          class="form-control"
+          placeholder="correo@dominio.com"
+          required
+        />
+        <BButton type="submit" variant="dark" :disabled="roleUpdateLoading">
+          <span v-if="roleUpdateLoading" class="spinner-border spinner-border-sm me-2"></span>
+          Conceder administrador
+        </BButton>
+      </form>
+      <BAlert
+        v-if="roleUpdateStatus"
+        :variant="roleUpdateStatus.type"
+        class="mt-3 mb-0"
+        dismissible
+        @dismissed="roleUpdateStatus = null"
+      >
+        {{ roleUpdateStatus.message }}
+      </BAlert>
+    </BCard>
+
     <BCard v-if="!coursesStore.isLoading && !coursesStore.getError">
       <BTable
         :items="coursesStore.allCourses"
@@ -50,19 +99,27 @@
         responsive
         class="mb-0"
       >
+     <template #cell(nombre)="data">
+        {{ hasText(data.item.nombre) ? data.item.nombre : 'Curso sin título' }}
+      </template>
+
      <template #cell(img)="data">
   <img
-    v-if="data.item.img"
+    v-if="hasText(data.item.img)"
     :src="data.item.img"
-    :alt="data.item.nombre"
+    :alt="data.item.nombre || 'Curso sin título'"
     style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;"
     class="rounded"
     @click="openImageModal(data.item)"
   />
   <div
     v-else
-    style="width:50px; height:50px; background:#f0f0f0; border-radius:6px; cursor: default;"
-  ></div>
+    class="d-flex flex-column align-items-center justify-content-center text-muted"
+    style="width:50px; height:50px; background:#f0f0f0; border-radius:6px; cursor: default; font-size:10px; text-align:center; padding:2px;"
+  >
+    Sin
+    imagen
+  </div>
 </template>
 
 
@@ -196,6 +253,16 @@
         </BButton>
       </template>
     </BModal>
+
+    <BModal
+      v-model="showSuccessModal"
+      title="Operación exitosa"
+      centered
+      ok-only
+      ok-title="Aceptar"
+    >
+      <p class="mb-0">{{ successMessage }}</p>
+    </BModal>
   </div>
 </template>
 
@@ -216,11 +283,21 @@ import {
   BModal,
   BFormCheckbox
 } from 'bootstrap-vue-next'
+import { collection, query, where, getDocs } from 'firebase/firestore'
 import { useCoursesStore } from '../stores/courses'
+import { useAuthStore } from '../stores/auth'
 import CourseForm from '../components/CourseForm.vue'
+import { db } from '@/firebase/config'
 
 const router = useRouter()
 const coursesStore = useCoursesStore()
+const authStore = useAuthStore()
+
+const dbRefs = {
+  profiles: () => collection(db, 'userProfiles')
+}
+
+const hasText = (value) => typeof value === 'string' && value.trim().length > 0
 
 // temporal para depuración — puedes eliminar después
 window.__coursesStore = coursesStore
@@ -230,6 +307,8 @@ const showAddModal = ref(false)
 const showConfirmAdd = ref(false)
 const showConfirmDelete = ref(false)
 const courseToDelete = ref(null)
+const showSuccessModal = ref(false)
+const successMessage = ref('')
 
 
 
@@ -263,6 +342,79 @@ const formatStartDate = (raw) => {
   }
 }
 
+const openSuccessModal = (message) => {
+  successMessage.value = message
+  showSuccessModal.value = true
+}
+
+const showRoleManager = computed(() => authStore.isAdmin)
+const roleUpdateLoading = ref(false)
+const roleUpdateEmail = ref('')
+const roleUpdateStatus = ref(null)
+
+const assignAdminRole = async () => {
+  if (!roleUpdateEmail.value.trim()) {
+    roleUpdateStatus.value = { type: 'danger', message: 'Ingresa un correo para continuar' }
+    return
+  }
+
+  roleUpdateLoading.value = true
+  roleUpdateStatus.value = null
+
+  try {
+    const profilesQuery = query(
+      dbRefs.profiles(),
+      where('email', '==', roleUpdateEmail.value.trim().toLowerCase())
+    )
+    const profilesSnapshot = await getDocs(profilesQuery)
+    const match = profilesSnapshot.docs[0]
+    if (!match) {
+      roleUpdateStatus.value = { type: 'danger', message: 'No se encontró un perfil con ese correo' }
+      return
+    }
+
+    await authStore.updateUserRole({ uid: match.id, role: 'admin' })
+    roleUpdateStatus.value = { type: 'success', message: 'Permisos de administrador asignados' }
+    roleUpdateEmail.value = ''
+  } catch (error) {
+    console.error('[Admin] assignAdminRole error', error)
+    roleUpdateStatus.value = { type: 'danger', message: 'No se pudo actualizar el rol' }
+  } finally {
+    roleUpdateLoading.value = false
+  }
+}
+
+
+
+const incompleteCourses = computed(() => (
+  coursesStore.allCourses.filter((course) => !hasText(course?.nombre) || !hasText(course?.img))
+))
+
+const hasIncompleteCourses = computed(() => incompleteCourses.value.length > 0)
+const isCleaningIncomplete = ref(false)
+
+const removeIncompleteCourses = async () => {
+  if (!incompleteCourses.value.length || isCleaningIncomplete.value) {
+    return
+  }
+
+  isCleaningIncomplete.value = true
+
+  try {
+    for (const course of [...incompleteCourses.value]) {
+      if (course?.id) {
+        await coursesStore.deleteCourse(course.id)
+      }
+    }
+    openSuccessModal('Cursos incompletos eliminados correctamente.')
+  } catch (error) {
+    console.error('[Admin] removeIncompleteCourses error', error)
+    alert('No fue posible eliminar los cursos incompletos. Intenta nuevamente.')
+  } finally {
+    isCleaningIncomplete.value = false
+  }
+}
+
 
 
 const newCourse = ref({
@@ -290,7 +442,6 @@ const tableFields = [
 
 const isFormValid = computed(() => {
   const c = newCourse.value
-  const hasText = (v) => typeof v === 'string' && v.trim().length > 0
   const hasNumber = (v) => typeof v === 'number' && !Number.isNaN(v)
   return hasText(c.codigo) &&
     hasText(c.nombre) &&
@@ -360,6 +511,7 @@ const addCourse = async () => {
     if (result && result.success) {
       resetForm()
       showAddModal.value = false
+      openSuccessModal('Curso agregado correctamente.')
     } else {
       alert('Error al agregar curso: ' + (result?.error || 'Error desconocido'))
     }
@@ -379,7 +531,11 @@ const deleteCourse = async () => {
   if (!courseToDelete.value) return
   try {
     const result = await coursesStore.deleteCourse(courseToDelete.value.id)
-    if (!(result && result.success)) alert('Error al eliminar curso: ' + (result?.error || 'Error desconocido'))
+    if (result && result.success) {
+      openSuccessModal('Curso eliminado correctamente.')
+    } else {
+      alert('Error al eliminar curso: ' + (result?.error || 'Error desconocido'))
+    }
   } finally {
     courseToDelete.value = null
   }

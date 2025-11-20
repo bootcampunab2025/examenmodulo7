@@ -11,6 +11,7 @@
     "build": "vite build",
     "build:gh-pages": "vite build --mode gh-pages",
     "preview": "vite preview",
+    "seed:admins": "node scripts/create-admin-users.mjs",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test dev http://localhost:5173 cypress:run",

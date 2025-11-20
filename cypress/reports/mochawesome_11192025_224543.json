@@ -1,0 +1,229 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 7,
+    "passes": 5,
+    "pending": 0,
+    "failures": 2,
+    "start": "2025-11-20T01:45:10.400Z",
+    "end": "2025-11-20T01:45:43.565Z",
+    "duration": 33165,
+    "testsRegistered": 7,
+    "passPercent": 71.42857142857143,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "c359af52-8c34-4b98-b1c2-4dcdef803631",
+      "title": "",
+      "fullFile": "cypress\\e2e\\login.cy.js",
+      "file": "cypress\\e2e\\login.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "08ce7d59-e2be-433d-8033-2175a4ffee30",
+          "title": "Login Functionality",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display login form",
+              "fullTitle": "Login Functionality should display login form",
+              "timedOut": null,
+              "duration": 6109,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Verificar que los elementos del formulario estén presentes\ncy.get('#email').should('be.visible');\ncy.get('#password').should('be.visible');\ncy.get('button[type=\"submit\"]').should('be.visible');\ncy.contains('Iniciar Sesión').should('be.visible');",
+              "err": {},
+              "uuid": "5ff90b45-bc9a-4bde-a79a-fd5cb3e5ea2c",
+              "parentUUID": "08ce7d59-e2be-433d-8033-2175a4ffee30",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show error for invalid credentials",
+              "fullTitle": "Login Functionality should show error for invalid credentials",
+              "timedOut": null,
+              "duration": 4870,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Intentar login con credenciales inválidas\ncy.get('#email').type('invalid@email.com');\ncy.get('#password').type('wrongpassword');\ncy.get('button[type=\"submit\"]').click();\n// Verificar que se muestre un mensaje de error\ncy.get('.alert-danger').should('be.visible');",
+              "err": {},
+              "uuid": "a4531495-9599-4b7f-860b-ac0dafcac887",
+              "parentUUID": "08ce7d59-e2be-433d-8033-2175a4ffee30",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show validation errors for empty fields",
+              "fullTitle": "Login Functionality should show validation errors for empty fields",
+              "timedOut": null,
+              "duration": 1248,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Intentar enviar formulario vacío\ncy.get('button[type=\"submit\"]').click();\n// Los campos requeridos deberían mostrar validación del navegador\ncy.get('#email:invalid').should('exist');\ncy.get('#password:invalid').should('exist');",
+              "err": {},
+              "uuid": "7a64c7ab-5df3-4f6e-9d30-6cfb639fef63",
+              "parentUUID": "08ce7d59-e2be-433d-8033-2175a4ffee30",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should redirect to register page",
+              "fullTitle": "Login Functionality should redirect to register page",
+              "timedOut": null,
+              "duration": 3520,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Hacer clic en el enlace de registro\ncy.contains('Regístrate aquí').click();\n// Verificar que se redirija a la página de registro\ncy.url().should('include', '/register');",
+              "err": {},
+              "uuid": "3901cf5f-1e22-4a2a-be1e-5b4bf56be823",
+              "parentUUID": "08ce7d59-e2be-433d-8033-2175a4ffee30",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should login successfully with valid credentials",
+              "fullTitle": "Login Functionality should login successfully with valid credentials",
+              "timedOut": null,
+              "duration": 5399,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "performSuccessfulLogin(testCredentials);\nassertNavbarForUser(testCredentials.email);\nlogoutFromNavbar();",
+              "err": {
+                "message": "TypeError: The following error originated from your application code, not from Cypress. It was caused by an unhandled promise rejection.\n\n  > unsubscribe.value is not a function\n\nWhen Cypress detects uncaught errors originating from your application it will automatically fail the current test.\n\nThis behavior is configurable, and you can choose to turn this off by listening to the `uncaught:exception` event.\n\nhttps://on.cypress.io/uncaught-exception-from-application",
+                "estack": "TypeError: The following error originated from your application code, not from Cypress. It was caused by an unhandled promise rejection.\n\n  > unsubscribe.value is not a function\n\nWhen Cypress detects uncaught errors originating from your application it will automatically fail the current test.\n\nThis behavior is configurable, and you can choose to turn this off by listening to the `uncaught:exception` event.\n\nhttps://on.cypress.io/uncaught-exception-from-application\n    at <unknown> (http://localhost:5173/src/views/HomeView.vue:58:17)\n    at <unknown> (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:4998:40)\n    at callWithErrorHandling (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:2296:19)\n    at callWithAsyncErrorHandling (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:2303:17)\n    at hook.__weh.hook.__weh (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:4978:19)\n    at flushPostFlushCbs (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:2481:28)\n    at flushJobs (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:2523:5)",
+                "diff": null
+              },
+              "uuid": "f2c260e9-fc25-45f4-b6ad-6ae6e3345eae",
+              "parentUUID": "08ce7d59-e2be-433d-8033-2175a4ffee30",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should maintain session after page reload",
+              "fullTitle": "Login Functionality should maintain session after page reload",
+              "timedOut": null,
+              "duration": 5250,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "performSuccessfulLogin(testCredentials);\ncy.reload();\ndismissWelcomeModalIfVisible();\nassertNavbarForUser(testCredentials.email);\nlogoutFromNavbar();",
+              "err": {},
+              "uuid": "994d1b03-b2dc-46f6-b611-2e95abda7229",
+              "parentUUID": "08ce7d59-e2be-433d-8033-2175a4ffee30",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should logout successfully",
+              "fullTitle": "Login Functionality should logout successfully",
+              "timedOut": null,
+              "duration": 5815,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "performSuccessfulLogin(testCredentials);\nlogoutFromNavbar();",
+              "err": {
+                "message": "TypeError: The following error originated from your application code, not from Cypress. It was caused by an unhandled promise rejection.\n\n  > unsubscribe.value is not a function\n\nWhen Cypress detects uncaught errors originating from your application it will automatically fail the current test.\n\nThis behavior is configurable, and you can choose to turn this off by listening to the `uncaught:exception` event.\n\nhttps://on.cypress.io/uncaught-exception-from-application",
+                "estack": "TypeError: The following error originated from your application code, not from Cypress. It was caused by an unhandled promise rejection.\n\n  > unsubscribe.value is not a function\n\nWhen Cypress detects uncaught errors originating from your application it will automatically fail the current test.\n\nThis behavior is configurable, and you can choose to turn this off by listening to the `uncaught:exception` event.\n\nhttps://on.cypress.io/uncaught-exception-from-application\n    at <unknown> (http://localhost:5173/src/views/HomeView.vue:58:17)\n    at <unknown> (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:4998:40)\n    at callWithErrorHandling (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:2296:19)\n    at callWithAsyncErrorHandling (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:2303:17)\n    at hook.__weh.hook.__weh (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:4978:19)\n    at flushPostFlushCbs (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:2481:28)\n    at flushJobs (http://localhost:5173/node_modules/.vite/deps/chunk-LG6AQRJS.js?v=bf174a00:2523:5)",
+                "diff": null
+              },
+              "uuid": "9b614171-1e5f-4877-a71b-351382dac23a",
+              "parentUUID": "08ce7d59-e2be-433d-8033-2175a4ffee30",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "5ff90b45-bc9a-4bde-a79a-fd5cb3e5ea2c",
+            "a4531495-9599-4b7f-860b-ac0dafcac887",
+            "7a64c7ab-5df3-4f6e-9d30-6cfb639fef63",
+            "3901cf5f-1e22-4a2a-be1e-5b4bf56be823",
+            "994d1b03-b2dc-46f6-b611-2e95abda7229"
+          ],
+          "failures": [
+            "f2c260e9-fc25-45f4-b6ad-6ae6e3345eae",
+            "9b614171-1e5f-4877-a71b-351382dac23a"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 32211,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.0"
+    }
+  }
+}

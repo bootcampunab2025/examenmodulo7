@@ -9,7 +9,7 @@ Sistema de administración de cursos desarrollado con Vue 3, Firebase y Bootstra
 - ✅ **Base de datos en tiempo real**: Firestore para almacenamiento
 - ✅ **UI moderna**: Bootstrap Vue para estilos
 - ✅ **Gestión de estado**: Vuex 4 (módulos `auth` y `courses`)
-- ✅ **Catálogo público**: Home visible sin login; solo las rutas de gestión requieren autenticación
+- ✅ **Catálogo protegido**: Home y administración accesibles solo con sesión iniciada, tal como exige la rúbrica
 - ✅ **Pruebas E2E**: Cypress para testing
 - ✅ **Responsive**: Adaptable a dispositivos móviles
 
@@ -129,3 +129,18 @@ Los cursos incluidos son:
 2. **CSS** - $20.000 - 1 mes - 20 cupos - Inactivo  
 3. **SASS** - $40.000 - 2 meses - 30 cupos - Activo
 4. **VUE** - $50.000 - 3 meses - 15 cupos - Inactivo
+
+## 👥 Usuarios de Prueba (Admin)
+
+Ejecuta el script para generar o actualizar los administradores predefinidos. Es idempotente: si el correo ya existe, solo vuelve a asignar el rol `admin`.
+
+```bash
+npm run seed:admins
+```
+
+| Email                       | Contraseña | Rol   | Descripción         |
+|-----------------------------|------------|-------|---------------------|
+| `admin.catalogo@adweb.com`  | `Admin123*`| admin | Responsable catálogo|
+| `admin.ventas@adweb.com`    | `Admin123*`| admin | Responsable ventas  |
+
+> Reemplaza las contraseñas en Firebase si llevarás el proyecto a producción. La app fuerza el rol `admin` en tiempo de ejecución para ambos correos incluso si el documento `userProfiles` aún no se actualiza.

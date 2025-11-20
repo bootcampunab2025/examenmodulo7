@@ -1,0 +1,220 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 7,
+    "passes": 7,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-11-20T01:55:43.836Z",
+    "end": "2025-11-20T01:56:15.775Z",
+    "duration": 31939,
+    "testsRegistered": 7,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "fd70a024-0a58-40f5-8194-f2b51cfc64ba",
+      "title": "",
+      "fullFile": "cypress\\e2e\\login.cy.js",
+      "file": "cypress\\e2e\\login.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "591f1ac6-ed70-43fd-9724-bba596294f3e",
+          "title": "Login Functionality",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display login form",
+              "fullTitle": "Login Functionality should display login form",
+              "timedOut": null,
+              "duration": 7694,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Verificar que los elementos del formulario estén presentes\ncy.get('#email').should('be.visible');\ncy.get('#password').should('be.visible');\ncy.get('button[type=\"submit\"]').should('be.visible');\ncy.contains('Iniciar Sesión').should('be.visible');",
+              "err": {},
+              "uuid": "8b1dadc7-d234-4a90-b09a-fa309d1b64b5",
+              "parentUUID": "591f1ac6-ed70-43fd-9724-bba596294f3e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show error for invalid credentials",
+              "fullTitle": "Login Functionality should show error for invalid credentials",
+              "timedOut": null,
+              "duration": 4220,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Intentar login con credenciales inválidas\ncy.get('#email').type('invalid@email.com');\ncy.get('#password').type('wrongpassword');\ncy.get('button[type=\"submit\"]').click();\n// Verificar que se muestre un mensaje de error\ncy.get('.alert-danger').should('be.visible');",
+              "err": {},
+              "uuid": "cce63a96-8877-4783-a090-b3df8984cf5b",
+              "parentUUID": "591f1ac6-ed70-43fd-9724-bba596294f3e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show validation errors for empty fields",
+              "fullTitle": "Login Functionality should show validation errors for empty fields",
+              "timedOut": null,
+              "duration": 1219,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Intentar enviar formulario vacío\ncy.get('button[type=\"submit\"]').click();\n// Los campos requeridos deberían mostrar validación del navegador\ncy.get('#email:invalid').should('exist');\ncy.get('#password:invalid').should('exist');",
+              "err": {},
+              "uuid": "30eca9b9-6457-4b93-924e-d7ab6ee01208",
+              "parentUUID": "591f1ac6-ed70-43fd-9724-bba596294f3e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should redirect to register page",
+              "fullTitle": "Login Functionality should redirect to register page",
+              "timedOut": null,
+              "duration": 1646,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Hacer clic en el enlace de registro\ncy.contains('Regístrate aquí').click();\n// Verificar que se redirija a la página de registro\ncy.url().should('include', '/register');",
+              "err": {},
+              "uuid": "b1718835-27d2-4adb-9d88-31af62bdad84",
+              "parentUUID": "591f1ac6-ed70-43fd-9724-bba596294f3e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should login successfully with valid credentials",
+              "fullTitle": "Login Functionality should login successfully with valid credentials",
+              "timedOut": null,
+              "duration": 4707,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "performSuccessfulLogin(testCredentials);\nassertNavbarForUser(testCredentials.email);\nlogoutFromNavbar();",
+              "err": {},
+              "uuid": "0c070215-b6a5-43da-8cfc-88fc54b15448",
+              "parentUUID": "591f1ac6-ed70-43fd-9724-bba596294f3e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should maintain session after page reload",
+              "fullTitle": "Login Functionality should maintain session after page reload",
+              "timedOut": null,
+              "duration": 6718,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "performSuccessfulLogin(testCredentials);\ncy.reload();\ndismissWelcomeModalIfVisible();\nassertNavbarForUser(testCredentials.email);\nlogoutFromNavbar();",
+              "err": {},
+              "uuid": "fd0c7421-daec-4a17-91b5-48f4fe5992b5",
+              "parentUUID": "591f1ac6-ed70-43fd-9724-bba596294f3e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should logout successfully",
+              "fullTitle": "Login Functionality should logout successfully",
+              "timedOut": null,
+              "duration": 4378,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "performSuccessfulLogin(testCredentials);\nlogoutFromNavbar();",
+              "err": {},
+              "uuid": "63c1db92-5058-4c2f-b2eb-055e26ef8374",
+              "parentUUID": "591f1ac6-ed70-43fd-9724-bba596294f3e",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "8b1dadc7-d234-4a90-b09a-fa309d1b64b5",
+            "cce63a96-8877-4783-a090-b3df8984cf5b",
+            "30eca9b9-6457-4b93-924e-d7ab6ee01208",
+            "b1718835-27d2-4adb-9d88-31af62bdad84",
+            "0c070215-b6a5-43da-8cfc-88fc54b15448",
+            "fd0c7421-daec-4a17-91b5-48f4fe5992b5",
+            "63c1db92-5058-4c2f-b2eb-055e26ef8374"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 30582,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.0"
+    }
+  }
+}

@@ -9,10 +9,15 @@
 // ***********************************************
 
 // Comando personalizado para login
-Cypress.Commands.add('login', (email, password) => {
-  cy.visit('/login')
-  cy.get('#email').type(email)
-  cy.get('#password').type(password)
+Cypress.Commands.add('login', (email, password, options = {}) => {
+  const { visit = true } = options
+
+  if (visit) {
+    cy.visit('/login')
+  }
+
+  cy.get('#email').clear().type(email)
+  cy.get('#password').clear().type(password)
   cy.get('button[type="submit"]').click()
 })
 

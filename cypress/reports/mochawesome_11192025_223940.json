@@ -1,0 +1,172 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 4,
+    "passes": 2,
+    "pending": 0,
+    "failures": 2,
+    "start": "2025-11-20T01:37:43.904Z",
+    "end": "2025-11-20T01:39:40.180Z",
+    "duration": 116276,
+    "testsRegistered": 4,
+    "passPercent": 50,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "016fe8fa-5be8-4054-a2b4-6b6e449a07aa",
+      "title": "",
+      "fullFile": "cypress\\e2e\\delete-course.cy.js",
+      "file": "cypress\\e2e\\delete-course.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "37504ab2-72d3-4435-995d-663ae0fcdeb5",
+          "title": "Delete Course Functionality",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display a newly created course in the admin table",
+              "fullTitle": "Delete Course Functionality should display a newly created course in the admin table",
+              "timedOut": null,
+              "duration": 27490,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const course = generateCourseData();\ncreateCourseViaUI(course);\ncy.contains('td', course.codigo).should('be.visible');\n// Limpieza\nopenDeleteModalForCourse(course.nombre);\nconfirmDeleteForCourse(course);",
+              "err": {},
+              "uuid": "9b433efa-edae-4ec4-b01f-a3785899dda1",
+              "parentUUID": "37504ab2-72d3-4435-995d-663ae0fcdeb5",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should show delete confirmation modal with course details",
+              "fullTitle": "Delete Course Functionality should show delete confirmation modal with course details",
+              "timedOut": null,
+              "duration": 35595,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "const course = generateCourseData();\ncreateCourseViaUI(course);\nopenDeleteModalForCourse(course.nombre);\ncy.contains('¿Realmente deseas eliminar').should('be.visible');\ncy.contains(course.nombre).should('be.visible');\ncy.get('[data-cy=\"cancel-delete-btn\"]').should('be.visible');\ncy.get('[data-cy=\"confirm-delete-btn\"]').should('be.visible');\ncancelDeleteModal();\n// Limpieza\nopenDeleteModalForCourse(course.nombre);\nconfirmDeleteForCourse(course);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected <div#BootstrapVueNext__ID__v-65__modal___.modal.fade.stack-position--1.stack-inverse-position-0> not to exist in the DOM, but it was continuously found.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected <div#BootstrapVueNext__ID__v-65__modal___.modal.fade.stack-position--1.stack-inverse-position-0> not to exist in the DOM, but it was continuously found.\n    at cancelDeleteModal (webpack://vue-firebase/./cypress/e2e/delete-course.cy.js:106:45)\n    at Context.eval (webpack://vue-firebase/./cypress/e2e/delete-course.cy.js:147:4)",
+                "diff": null
+              },
+              "uuid": "9772b9b0-cf6a-4bf3-a781-2dcefb63fbb0",
+              "parentUUID": "37504ab2-72d3-4435-995d-663ae0fcdeb5",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should keep the course when the user cancels the deletion",
+              "fullTitle": "Delete Course Functionality should keep the course when the user cancels the deletion",
+              "timedOut": null,
+              "duration": 18124,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "const course = generateCourseData();\ncreateCourseViaUI(course);\nopenDeleteModalForCourse(course.nombre);\ncancelDeleteModal();\ncy.contains('tr', course.nombre).should('exist');\n// Limpieza final\nopenDeleteModalForCourse(course.nombre);\nconfirmDeleteForCourse(course);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected <div#BootstrapVueNext__ID__v-65__modal___.modal.fade.stack-position--1.stack-inverse-position-0> not to exist in the DOM, but it was continuously found.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected <div#BootstrapVueNext__ID__v-65__modal___.modal.fade.stack-position--1.stack-inverse-position-0> not to exist in the DOM, but it was continuously found.\n    at cancelDeleteModal (webpack://vue-firebase/./cypress/e2e/delete-course.cy.js:106:45)\n    at Context.eval (webpack://vue-firebase/./cypress/e2e/delete-course.cy.js:159:4)",
+                "diff": null
+              },
+              "uuid": "300b817a-7d4b-4bb3-b3dc-f514f882c869",
+              "parentUUID": "37504ab2-72d3-4435-995d-663ae0fcdeb5",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should delete the course after confirming the modal",
+              "fullTitle": "Delete Course Functionality should delete the course after confirming the modal",
+              "timedOut": null,
+              "duration": 31409,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const course = generateCourseData();\ncreateCourseViaUI(course);\nopenDeleteModalForCourse(course.nombre);\nconfirmDeleteForCourse(course);",
+              "err": {},
+              "uuid": "f0502292-1f7f-49a0-a8a3-dbf227f04ef2",
+              "parentUUID": "37504ab2-72d3-4435-995d-663ae0fcdeb5",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "9b433efa-edae-4ec4-b01f-a3785899dda1",
+            "f0502292-1f7f-49a0-a8a3-dbf227f04ef2"
+          ],
+          "failures": [
+            "9772b9b0-cf6a-4bf3-a781-2dcefb63fbb0",
+            "300b817a-7d4b-4bb3-b3dc-f514f882c869"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 112618,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.0"
+    }
+  }
+}
